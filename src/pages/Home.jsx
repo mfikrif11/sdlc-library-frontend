@@ -1,3 +1,4 @@
+
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import {
   Alert,
@@ -6,10 +7,15 @@ import {
   Box,
   Button,
   color,
+
+  Box,
+  Button,
+
   Container,
   Flex,
   Grid,
   GridItem,
+
   HStack,
   Image,
   Input,
@@ -19,10 +25,15 @@ import {
   MenuList,
   Select,
   Text,
-} from "@chakra-ui/react"
+   
+} from "@chakra-ui/react";
+
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
 import Book from "../components/Book"
+import { Link } from "react-router-dom";
+import plankton from "../assets/plankton.png";
+import libraryImage from "../assets/Reading glasses-bro.png";
 
 const Home = () => {
   const [books, setBooks] = useState([])
@@ -72,6 +83,7 @@ const Home = () => {
     }
   }
 
+
   const renderBooks = () => {
     return books.map((val) => {
       return (
@@ -100,9 +112,11 @@ const Home = () => {
     fetchBooks()
   }, [page])
 
+
   return (
     <>
-      <Box height={"auto"} marginTop="100px" bgRepeat="repeat">
+      <Box marginTop="120px">
+
         <Grid
           templateColumns={{
             lg: "repeat(2, 1fr)",
@@ -110,27 +124,42 @@ const Home = () => {
             base: "repeat(1, 1fr)",
           }}
           gap={6}
+
+          // mt={"30px"}
         >
           <GridItem>
             <Text
-              fontSize={"60px"}
+              fontSize={"50px"}
               fontStyle="sans-serif"
               fontWeight={"bold"}
-              margin={"-21px 0px 0px 50px"}
+              textAlign={"center"}
             >
-              Welcome to Chumbucket
+              Welcome to
+              <br />
+              Chumbucket
             </Text>
-            <Box margin={"20px auto 0px 0px"}>
+            <Flex justifyContent={"center"} mt={"20px"} mb={"40px"}>
               <Image
                 // boxSize="100px"
                 objectFit="cover"
-                src="https://storyset.com/illustration/bibliophile/rafiki"
-                alt="Dan Abramov"
+                src={plankton}
+                alt="plankton"
+                height={"250px"}
+                display={{ base: "none", lg: "initial" }}
               />
-            </Box>
+              <Image
+                // boxSize="100px"
+                objectFit="cover"
+                src={libraryImage}
+                alt="plankton"
+                height={"250px"}
+                ml={{ base: "40px" }}
+              />
+            </Flex>
           </GridItem>
-          <GridItem padding={"30px 80px 30px 30px"} height="100%">
-            <Grid templateRows=".2fr 1fr .2fr" gap={6}>
+          <GridItem padding={"30px 30px 30px 30px"} height="100%">
+            <Grid templateRows=".2fr 1fr .2fr">
+
               <GridItem></GridItem>
               <GridItem>
                 <Box>
@@ -139,13 +168,14 @@ const Home = () => {
                     fontFamily="sans-serif"
                     fontStyle={"Open Sans"}
                     fontWeight="thin"
+
+                    marginTop={{ lg: "40px", base: "none", md: "none" }}
                   >
-                    We combine local knowledge with global expertise, strategy
-                    with design, empathy with creativity, meaning with magic.
-                    Reach out to discuss how we might help you accelerate
-                    change.
+                    This library was created by the noble plankton, Mr.
+                    Plankton. He has a vision and mission to educate bikini
+                    bottom residents by reading.
                     <Text fontWeight={"bold"}>
-                      Duis aute irure dolor in reprehenderit
+                      Feel free to take a look at our collection of books.
                     </Text>
                   </Text>
                 </Box>
@@ -168,12 +198,8 @@ const Home = () => {
         </Grid>
       </Box>
 
-      <Box
-        backgroundColor={"#eff3f9"}
-        height="auto"
-        // width={"100%"}
-        paddingBottom="15px"
-      >
+
+     <Box backgroundColor={"#eff3f9"} height="auto" width={"fit-content"}>
         <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           <GridItem></GridItem>
           <GridItem>
@@ -209,17 +235,17 @@ const Home = () => {
                 </Box>
               </GridItem>
               <GridItem>
-                <Text
-                  textAlign={"center"}
-                  fontSize="48px"
-                  fontWeight={"bold"}
-                  fontFamily="sans-serif"
-                  justifyContent={"center"}
-                  mt="60px"
-                  id="ourbooks"
-                >
-                  Our Books
-                </Text>
+               <Text
+              textAlign={"center"}
+              fontSize={"4xl"}
+              fontWeight={"bold"}
+              fontFamily="sans-serif"
+              justifyContent={"center"}
+              mt="30px"
+              id="ourbooks"
+            >
+              Our Books
+            </Text>
               </GridItem>
               <GridItem display={"flex"}>
                 <Box display={"flex"} mt="80px" justifyContent={"left"}>
@@ -261,6 +287,7 @@ const Home = () => {
               </GridItem>
             </Grid>
 
+
             <Grid
               templateColumns={{
                 md: "repeat(3, 1fr)",
@@ -272,6 +299,7 @@ const Home = () => {
             >
               {renderBooks()}
             </Grid>
+
             <Grid templateColumns="repeat(3, 1fr)" mt="15px">
               <GridItem />
               <GridItem />
@@ -308,30 +336,27 @@ const Home = () => {
           </GridItem>
           <GridItem></GridItem>
         </Grid>
-      </Box>
+      
 
-      <Box
-        backgroundColor={"#43615f"}
-        height={"auto"}
-        width="100%"
-        textAlign={"center"}
-      >
-        <Text
-          fontSize={"4xl"}
-          color="white"
-          fontWeight={"bold"}
-          padding={"54px 0"}
+     <Box
+          backgroundColor={"#43615f"}
+          textAlign={"center"}
+          padding={"30px"}
+          mt={"30px"}
         >
-          Contact us{" "}
-          <a
-            href={
-              "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
-            }
-          >
-            chumbucket.library@gmail.com
-          </a>
-        </Text>
-      </Box>
+          <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
+            <Text fontWeight={"light"}>Contact Us</Text>
+            <a
+              href={
+                "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
+              }
+            >
+              chumbucket.library@gmail.com
+            </a>
+          </Text>
+          <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
+        </Box>
+        </Box>
     </>
   )
 }
