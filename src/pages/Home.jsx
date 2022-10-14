@@ -1,4 +1,3 @@
-
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import {
   Alert,
@@ -7,15 +6,10 @@ import {
   Box,
   Button,
   color,
-
-  Box,
-  Button,
-
   Container,
   Flex,
   Grid,
   GridItem,
-
   HStack,
   Image,
   Input,
@@ -25,22 +19,22 @@ import {
   MenuList,
   Select,
   Text,
-   
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
 import Book from "../components/Book"
-import { Link } from "react-router-dom";
-import plankton from "../assets/plankton.png";
-import libraryImage from "../assets/Reading glasses-bro.png";
+import { Link } from "react-router-dom"
+import plankton from "../assets/plankton.png"
+import libraryImage from "../assets/Reading glasses-bro.png"
 
 const Home = () => {
   const [books, setBooks] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
-  const [sort, setSort] = useState("")
+  const [sortBy, setSortBy] = useState("title")
+  const [sortDir, setSortDir] = useState("ASC")
 
   const [inputFilter, setInputFilter] = useState("")
   const [currentFilter, setCurrentFilter] = useState("")
@@ -50,25 +44,19 @@ const Home = () => {
     setCurrentFilter(inputFilter)
   }
 
-  // const renderFruits = () => {
-  //   return fruits.map((val) => {
-  //     if (val.toLowerCase().includes(currentFilter.toLowerCase())) {
-  //       return <li>{val}</li>
-  //     }
-  //   })
-  // }
-
   const fetchBooks = async () => {
     const maxItemsPerPage = 12
 
     try {
-      const response = await axiosInstance.get(`books?_sortBy=${setSort}`, {
+      const response = await axiosInstance.get(`/books`, {
         params: {
           _page: page,
           _limit: maxItemsPerPage,
+          _sortBy: sortBy,
+          _sortDir: sortDir,
         },
       })
-
+      console.log(response)
       setTotalCount(response.data.dataCount)
       setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
 
@@ -82,7 +70,6 @@ const Home = () => {
       console.log(error)
     }
   }
-
 
   const renderBooks = () => {
     return books.map((val) => {
@@ -98,8 +85,11 @@ const Home = () => {
       )
     })
   }
-  const sortBook = () => {
-    setSort(sort + "")
+  const sortBookHandler = ({ target }) => {
+    const { value } = target
+
+    setSortBy(value.split(" ")[0])
+    setSortDir(value.split(" ")[1])
   }
 
   const seeMoreBtnHandler = () => {
@@ -110,13 +100,11 @@ const Home = () => {
   }
   useEffect(() => {
     fetchBooks()
-  }, [page])
-
+  }, [page, sortBy, sortDir])
 
   return (
     <>
       <Box marginTop="120px">
-
         <Grid
           templateColumns={{
             lg: "repeat(2, 1fr)",
@@ -159,7 +147,6 @@ const Home = () => {
           </GridItem>
           <GridItem padding={"30px 30px 30px 30px"} height="100%">
             <Grid templateRows=".2fr 1fr .2fr">
-
               <GridItem></GridItem>
               <GridItem>
                 <Box>
@@ -168,7 +155,6 @@ const Home = () => {
                     fontFamily="sans-serif"
                     fontStyle={"Open Sans"}
                     fontWeight="thin"
-
                     marginTop={{ lg: "40px", base: "none", md: "none" }}
                   >
                     This library was created by the noble plankton, Mr.
@@ -198,8 +184,7 @@ const Home = () => {
         </Grid>
       </Box>
 
-
-     <Box backgroundColor={"#eff3f9"} height="auto" width={"fit-content"}>
+      <Box backgroundColor={"#eff3f9"} height="auto" width={"fit-content"}>
         <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           <GridItem></GridItem>
           <GridItem>
@@ -235,17 +220,17 @@ const Home = () => {
                 </Box>
               </GridItem>
               <GridItem>
-               <Text
-              textAlign={"center"}
-              fontSize={"4xl"}
-              fontWeight={"bold"}
-              fontFamily="sans-serif"
-              justifyContent={"center"}
-              mt="30px"
-              id="ourbooks"
-            >
-              Our Books
-            </Text>
+                <Text
+                  textAlign={"center"}
+                  fontSize={"4xl"}
+                  fontWeight={"bold"}
+                  fontFamily="sans-serif"
+                  justifyContent={"center"}
+                  mt="30px"
+                  id="ourbooks"
+                >
+                  Our Books
+                </Text>
               </GridItem>
               <GridItem display={"flex"}>
                 <Box display={"flex"} mt="80px" justifyContent={"left"}>
@@ -275,18 +260,15 @@ const Home = () => {
                     Sort
                   </Text>
 
-                  <Select width={"120px"}>
-                    <option value="title" onClick={sortBook}>
-                      A - Z
-                    </option>
-                    <option value="desc">Z - A</option>
-                    <option value="latest">Latest</option>
-                    <option value="old">Old</option>
+                  <Select width={"120px"} onChange={sortBookHandler}>
+                    <option value="title ASC">A - Z</option>
+                    <option value="title DESC">Z - A</option>
+                    <option value="publish_date DESC">Latest</option>
+                    <option value="publish_date ASC">Old</option>
                   </Select>
                 </Box>
               </GridItem>
             </Grid>
-
 
             <Grid
               templateColumns={{
@@ -336,9 +318,8 @@ const Home = () => {
           </GridItem>
           <GridItem></GridItem>
         </Grid>
-      
 
-     <Box
+        <Box
           backgroundColor={"#43615f"}
           textAlign={"center"}
           padding={"30px"}
@@ -356,7 +337,7 @@ const Home = () => {
           </Text>
           <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
         </Box>
-        </Box>
+      </Box>
     </>
   )
 }
