@@ -1,4 +1,5 @@
 import {
+
   Box,
   Button,
   Container,
@@ -138,10 +139,22 @@ const Home = () => {
               justifyContent={"center"}
               mt="30px"
               id="ourbooks"
-            >
-              Our Books
-            </Text>
 
+            >
+                <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                    <GridItem></GridItem>
+                    <GridItem>
+                        <Text
+                            textAlign={"center"}
+                            fontSize="48px"
+                            fontWeight={"bold"}
+                            fontFamily="sans-serif"
+                            justifyContent={"center"}
+                            mt="60px"
+                            id="ourbooks"
+                        >
+                            Our Books
+                        </Text>
             <Grid
               templateColumns={{
                 md: "repeat(3, 1fr)",
@@ -178,5 +191,6 @@ const Home = () => {
     </>
   );
 };
+
 
 export default Home;
