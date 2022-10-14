@@ -1,9 +1,9 @@
 import { Box, Image, Text } from "@chakra-ui/react"
 import { Link } from "react-router-dom"
 
-const Book = ({ image_url, title, author, publish_date, genre }) => {
+const Book = ({ image_url, title, author, publish_date, genre, id }) => {
   return (
-    <Link>
+    <Link to={`/books/${id}`}>
       <Box
         width={"200px"}
         height={"340"}
