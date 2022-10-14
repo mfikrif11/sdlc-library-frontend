@@ -1,3 +1,4 @@
+
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import {
   Alert,
@@ -19,20 +20,25 @@ import {
   MenuList,
   Select,
   Text,
+
 } from "@chakra-ui/react"
+
 
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
 import Book from "../components/Book"
+
 import { Link } from "react-router-dom"
 import plankton from "../assets/plankton.png"
 import libraryImage from "../assets/Reading glasses-bro.png"
+
 
 const Home = () => {
   const [books, setBooks] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+
   const [sortBy, setSortBy] = useState("title")
   const [sortDir, setSortDir] = useState("ASC")
 
@@ -44,10 +50,12 @@ const Home = () => {
     setCurrentFilter(inputFilter)
   }
 
+
   const fetchBooks = async () => {
     const maxItemsPerPage = 12
 
     try {
+
       const response = await axiosInstance.get(`/books`, {
         params: {
           _page: page,
@@ -57,6 +65,7 @@ const Home = () => {
         },
       })
       console.log(response)
+
       setTotalCount(response.data.dataCount)
       setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
 
@@ -70,6 +79,7 @@ const Home = () => {
       console.log(error)
     }
   }
+
 
   const renderBooks = () => {
     return books.map((val) => {
@@ -85,12 +95,13 @@ const Home = () => {
       )
     })
   }
+
   const sortBookHandler = ({ target }) => {
     const { value } = target
 
     setSortBy(value.split(" ")[0])
     setSortDir(value.split(" ")[1])
-  }
+
 
   const seeMoreBtnHandler = () => {
     setPage(page + 1)
@@ -100,11 +111,14 @@ const Home = () => {
   }
   useEffect(() => {
     fetchBooks()
+
   }, [page, sortBy, sortDir])
+
 
   return (
     <>
       <Box marginTop="120px">
+
         <Grid
           templateColumns={{
             lg: "repeat(2, 1fr)",
@@ -147,6 +161,7 @@ const Home = () => {
           </GridItem>
           <GridItem padding={"30px 30px 30px 30px"} height="100%">
             <Grid templateRows=".2fr 1fr .2fr">
+
               <GridItem></GridItem>
               <GridItem>
                 <Box>
@@ -155,6 +170,7 @@ const Home = () => {
                     fontFamily="sans-serif"
                     fontStyle={"Open Sans"}
                     fontWeight="thin"
+
                     marginTop={{ lg: "40px", base: "none", md: "none" }}
                   >
                     This library was created by the noble plankton, Mr.
@@ -185,6 +201,7 @@ const Home = () => {
       </Box>
 
       <Box backgroundColor={"#eff3f9"} height="auto" width={"fit-content"}>
+
         <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           <GridItem></GridItem>
           <GridItem>
@@ -220,6 +237,7 @@ const Home = () => {
                 </Box>
               </GridItem>
               <GridItem>
+
                 <Text
                   textAlign={"center"}
                   fontSize={"4xl"}
@@ -231,6 +249,7 @@ const Home = () => {
                 >
                   Our Books
                 </Text>
+
               </GridItem>
               <GridItem display={"flex"}>
                 <Box display={"flex"} mt="80px" justifyContent={"left"}>
@@ -260,15 +279,18 @@ const Home = () => {
                     Sort
                   </Text>
 
+
                   <Select width={"120px"} onChange={sortBookHandler}>
                     <option value="title ASC">A - Z</option>
                     <option value="title DESC">Z - A</option>
                     <option value="publish_date DESC">Latest</option>
                     <option value="publish_date ASC">Old</option>
+
                   </Select>
                 </Box>
               </GridItem>
             </Grid>
+
 
             <Grid
               templateColumns={{
@@ -319,7 +341,9 @@ const Home = () => {
           <GridItem></GridItem>
         </Grid>
 
+
         <Box
+
           backgroundColor={"#43615f"}
           textAlign={"center"}
           padding={"30px"}
@@ -337,7 +361,7 @@ const Home = () => {
           </Text>
           <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
         </Box>
-      </Box>
+        </Box>
     </>
   )
 }
