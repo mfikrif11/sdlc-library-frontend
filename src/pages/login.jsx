@@ -17,8 +17,12 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { axiosInstance } from "../api";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/features/authSlice";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePassword = () => {
@@ -45,13 +49,13 @@ const LoginPage = () => {
         });
 
         localStorage.setItem("auth_token", response.data.token);
-        // dispatch(
-        //   login({
-        //     username: response.data.data.username,
-        //     email: response.data.data.email,
-        //     id: response.data.data.id,
-        //   })
-        // );
+        dispatch(
+          login({
+            username: response.data.data.username,
+            email: response.data.data.email,
+            id: response.data.data.id,
+          })
+        );
         formik.setFieldValue("NIM", "");
         formik.setFieldValue("password", "");
       } catch (err) {
@@ -76,7 +80,14 @@ const LoginPage = () => {
   };
 
   return (
-    <Box padding={"40px"} bg={"lightgrey"}>
+    <Box
+      padding={"40px"}
+      bg={"lightgrey"}
+      pr={"40px"}
+      pl={"40px"}
+      pt={"100px"}
+      pb={"40px"}
+    >
       <Flex
         direction={{
           base: "column",
@@ -103,7 +114,7 @@ const LoginPage = () => {
           >
             Hello Readers!
           </Text>
-          <Box pr={"40px"} pl={"40px"} mt={{ lg: "80px" }} mb={"30px"}>
+          <Box pr={"40px"} pl={"40px"} mt={{ lg: "120px" }} mb={"30px"}>
             {/* form */}
             <form onSubmit={formik.handleSubmit}>
               <FormControl mt={"10px"} isInvalid={formik.errors.NIM}>
@@ -117,7 +128,7 @@ const LoginPage = () => {
                 />
                 <FormErrorMessage>{formik.errors.NIM}</FormErrorMessage>
               </FormControl>
-              <FormControl isInvalid={formik.errors.password}>
+              <FormControl mt={"10px"} isInvalid={formik.errors.password}>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
                   <Input
@@ -152,9 +163,12 @@ const LoginPage = () => {
             </form>
             {/* form */}
             <Box textAlign={"right"}>
-              <Text fontSize={"smaller"} mt={"10px"}>
-                Don't Have an Account?
-              </Text>
+
+              <Link to={"/register"}>
+                <Text fontSize={"smaller"} mt={"10px"}>
+                  Don't Have an Account?
+                </Text>
+              </Link>
             </Box>
           </Box>
         </Box>
