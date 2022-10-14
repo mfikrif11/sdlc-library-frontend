@@ -12,7 +12,6 @@ axiosInstance.interceptors.request.use((req) => {
   if (auth_token) {
     req.headers.authorization = `Bearer ${auth_token}`;
   }
-  // ngegetnya dari headers authorization biar secure
 
   return req;
 });
@@ -22,12 +21,10 @@ axiosInstance.interceptors.response.use(
     return resSuccess;
   },
   (resError) => {
-    // console.log(resError);
     if (resError.response.status === 401) {
       console.log("LOGOUT USER");
       localStorage.removeItem("auth_token");
       store.dispatch(logout());
-      // ini gk pake useDispatch karena bukan format jsx
     }
 
     return Promise.reject(resError);

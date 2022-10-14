@@ -163,6 +163,7 @@ const LoginPage = () => {
             </form>
             {/* form */}
             <Box textAlign={"right"}>
+
               <Link to={"/register"}>
                 <Text fontSize={"smaller"} mt={"10px"}>
                   Don't Have an Account?
