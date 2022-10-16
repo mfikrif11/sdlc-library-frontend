@@ -1,4 +1,3 @@
-
 import {
     Box,
     Button,
@@ -118,6 +117,7 @@ const Book = ({ image_url, title, author, publish_date, genre, id }) => {
             toast({
                 title: "Add failed",
                 status: "error",
+                description: err.response.data.message,
             })
         }
     }
