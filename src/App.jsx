@@ -1,3 +1,4 @@
+
 import { Box, Text } from "@chakra-ui/react"
 import { Routes, Route, Link } from "react-router-dom"
 import LoginPage from "./pages/login"
@@ -57,33 +58,35 @@ const App = () => {
         return <div>Loading...</div>
     }
 
-    return (
-        <>
-            <Box>
-                {/* #43615f hero color*/}
-                <Navbar />
-            </Box>
-            <Routes>
-                <Route
-                    path="/login"
-                    element={
-                        <GuestRoute>
-                            <LoginPage />
-                        </GuestRoute>
-                    }
-                />
-                <Route
-                    path="/register"
-                    element={
-                        <GuestRoute>
-                            <RegisterPage />
-                        </GuestRoute>
-                    }
-                />
-                <Route path="/" element={<Home />} />
-            </Routes>
-        </>
-    )
-}
+  return (
+    <>
+      <Box>
+        {/* #43615f hero color*/}
+        <Navbar />
+      </Box>
 
-export default App
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <GuestRoute>
+              <RegisterPage />
+            </GuestRoute>
+          }
+        />
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </>
+  );
+};
+
+export default App;
+

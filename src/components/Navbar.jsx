@@ -1,3 +1,4 @@
+
 import {
   Box,
   Button,
@@ -41,6 +42,7 @@ const Navbar = () => {
     navigate("/");
   };
 
+
   return (
     <Box
       backgroundColor={"#43615f"}
@@ -51,6 +53,7 @@ const Navbar = () => {
       zIndex={"999"}
       position="fixed"
     >
+
       {/* menu bar di HP */}
       <Flex flex={1}>
         <Menu>
@@ -108,6 +111,7 @@ const Navbar = () => {
               ChumBucket
             </Text>
           </Link>
+
         </GridItem>
         <GridItem
           display={"flex"}
@@ -116,6 +120,7 @@ const Navbar = () => {
           padding="2"
           my={"auto"}
         >
+
           {authSelector.username ? (
             <Button bgColor={"red.500"} onClick={logoutBtnHandler}>
               Logout
@@ -134,3 +139,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
