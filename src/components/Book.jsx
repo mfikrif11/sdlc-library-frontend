@@ -1,6 +1,8 @@
 import {
     Box,
     Button,
+    Grid,
+    GridItem,
     Image,
     Modal,
     ModalBody,
@@ -10,27 +12,59 @@ import {
     ModalHeader,
     ModalOverlay,
     Text,
+    useToast,
     useDisclosure,
+    ItemList,
+    Flex,
+    Spacer,
 } from "@chakra-ui/react"
-import { Link, useParams } from "react-router-dom"
+import { Link, Navigate, useParams } from "react-router-dom"
 import { useState } from "react"
 import { axiosInstance } from "../api"
 import { useSelector, useDispatch } from "react-redux"
 import { details } from "../redux/features/bookSlice"
+import { useEffect } from "react"
+import { login } from "../redux/features/authSlice"
 
-const Book = ({ image_url, title, author, publish_date, genre }) => {
+const Book = ({ image_url, title, author, publish_date, genre, id }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const params = useParams()
-    const [data, setData] = useState()
-    const authSelector = useSelector((state) => state.book)
+    const toast = useToast()
+    const [bookId, setBookId] = useState(0)
+
+    const [bookData, setBookData] = useState({
+        title: "",
+        author: "",
+        publish_date: 0,
+        genre: "",
+        image_url: "",
+        description: "",
+        id: "",
+    })
+    const authSelector = useSelector((state) => state.auth)
+    const authSelector2 = useSelector((state) => state.book)
+
+    const OverlayOne = () => (
+        <ModalOverlay
+            bg="blackAlpha.300"
+            backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
+    )
+
+    const [overlay, setOverlay] = useState(<OverlayOne />)
+
     const dispatch = useDispatch()
 
     const fetchPost = async () => {
         try {
-            const book = await axiosInstance.get("/books")
+            const book = await axiosInstance.get("/books", {
+                params: {
+                    id: params.id,
+                },
+            })
             console.log(book)
 
-            const bookId = data.data.data.filter((val) => {
+            const bookId = book.data.data.filter((val) => {
                 return val.id == params.id
             })
 
@@ -39,13 +73,65 @@ const Book = ({ image_url, title, author, publish_date, genre }) => {
             const response = await axiosInstance.get(`/books/${bookId[0].id}`)
             console.log(response.data.data)
 
-            setData(response.data.data)
+            // dispatch(
+            //     details({
+            //         id: response.data.data.id,
+            //         title: response.data.title,
+            //         author: response.data.author,
+            //         publish_date: response.data.publish_date,
+            //         genre: response.data.genre,
+            //         image_url: response.data.image_url,
+            //         description: response.data.description,
+            //     })
+            // )
         } catch (err) {
             console.log(err)
         }
     }
+
+    const fetchBookById = async () => {
+        try {
+            const response = await axiosInstance.get(`/books/${bookId}`)
+
+            setBookData(response.data.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const bookBtnHandler = async () => {
+        try {
+            let newId = {
+                BookId: bookId,
+            }
+            // const BookId = bookId
+            await axiosInstance.post(`/carts`, newId)
+            fetchBookById()
+            // dispatch(bookData.id)
+            toast({
+                title: "Add success",
+                status: "success",
+            })
+        } catch (err) {
+            console.log(err)
+            toast({
+                title: "Add failed",
+                status: "error",
+            })
+        }
+    }
+
+    useEffect(() => {
+        fetchBookById()
+    }, [bookId])
+
     return (
-        <Link onClick={onOpen}>
+        <Box
+            onClick={() => {
+                setBookId(id)
+                onOpen()
+            }}
+        >
             <Box
                 width={"200px"}
                 height={"340"}
@@ -77,27 +163,119 @@ const Book = ({ image_url, title, author, publish_date, genre }) => {
                     {publish_date}
                 </Text>
             </Box>
-            <>
-                {/* <Button onClick={onOpen}>Open Modal</Button> */}
-                <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Detail Book</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>{fetchPost}</ModalBody>
+            {!authSelector.id ? (
+                <>
+                    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                        {overlay}
+                        <ModalOverlay />
+                        <ModalContent>
+                            <ModalHeader>
+                                <Box textAlign="center">
+                                    <Text>You Must Loggin First!</Text>
+                                </Box>
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalFooter>
+                                <Box margin={"auto"}>
+                                    <Link to="/login">
+                                        <Button
+                                            onClick={onClose}
+                                            bgColor="#43615f"
+                                            color="white"
+                                        >
+                                            Login
+                                        </Button>
+                                    </Link>
+                                </Box>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                </>
+            ) : (
+                <>
+                    <Modal
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        size="4xl"
+                        isCentered
+                    >
+                        {overlay}
+                        <ModalOverlay />
+                        <ModalContent h="600px">
+                            <ModalHeader
+                                textAlign={"center"}
+                                fontSize="3xl"
+                                as={"b"}
+                            >
+                                Details Book
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                                <Grid
+                                    gridTemplateRows={"50px 2fr 30px"}
+                                    gridTemplateColumns={"150px 2fr"}
+                                >
+                                    <GridItem pl={2}>
+                                        <Image
+                                            boxSize="450px"
+                                            maxWidth={"300px"}
+                                            src={bookData?.image_url}
+                                        />
+                                    </GridItem>
+                                    <GridItem pl={"30%"}>
+                                        <Box>
+                                            <Text fontSize={"xl"} as="b">
+                                                Title
+                                            </Text>
+                                            <Text> {bookData?.title}</Text>
+                                        </Box>
+                                        <Box>
+                                            <Text fontSize={"xl"} as="b">
+                                                Author
+                                            </Text>
+                                            <Text>{bookData?.author}</Text>
+                                        </Box>
+                                        <Box>
+                                            <Text fontSize={"xl"} as="b">
+                                                Publish Date
+                                            </Text>
+                                            <Text>
+                                                {bookData?.publish_date}
+                                            </Text>
+                                        </Box>
+                                        <Box>
+                                            <Text fontSize={"xl"} as="b">
+                                                Genre
+                                            </Text>
+                                            <Text>{bookData?.genre}</Text>
+                                        </Box>
+                                        <Box>
+                                            <Text fontSize={"xl"} as="b">
+                                                Description
+                                            </Text>
+                                            <Text textAlign="justify">
+                                                {bookData?.description}
+                                            </Text>
+                                        </Box>
+                                    </GridItem>
+                                </Grid>
+                            </ModalBody>
 
-                        <ModalFooter>
-                            <Button colorScheme="blue" mr={3} onClick={onClose}>
-                                Close
-                            </Button>
-                            <Button bgColor="#43615f" color="white">
-                                Add to Cart
-                            </Button>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
-            </>
-        </Link>
+                            <ModalFooter>
+                                <Button
+                                    size={"sm"}
+                                    bgColor="#43615f"
+                                    color="white"
+                                    onClick={bookBtnHandler}
+                                >
+                                    <Text>Add to Cart</Text>
+                                </Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                </>
+            )}
+        </Box>
     )
 }
 

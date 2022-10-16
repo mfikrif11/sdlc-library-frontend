@@ -1,12 +1,17 @@
 import {
     Box,
     Button,
-    Container,
     Flex,
     Grid,
     GridItem,
     Image,
     Text,
+    Stack,
+    Alert,
+    AlertIcon,
+    AlertTitle,
+    HStack,
+    Tab,
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
@@ -37,6 +42,7 @@ const Home = () => {
                     author={val.author}
                     genre={val.genre}
                     publish_date={val.publish_date}
+                    id={val.id}
                 />
             )
         })
@@ -177,6 +183,7 @@ const Home = () => {
                                 </GridItem>
                                 <GridItem></GridItem>
                             </Grid>
+
                             <Box
                                 backgroundColor={"#43615f"}
                                 textAlign={"center"}
