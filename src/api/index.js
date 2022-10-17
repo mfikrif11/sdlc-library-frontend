@@ -1,7 +1,9 @@
 
+
 import axios from "axios"
 import { logout } from "../redux/features/authSlice"
 import { store } from "../redux/store"
+
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:2000",
@@ -34,4 +36,5 @@ axiosInstance.interceptors.response.use(
 )
 
 export { axiosInstance }
+
 

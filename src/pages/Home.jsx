@@ -1,37 +1,49 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  HStack,
-  Image,
-  Input,
-  Select,
-  Text,
+    Alert,
+    AlertIcon,
+    AlertTitle,
+    Box,
+    Button,
+    color,
+    Container,
+    Flex,
+    Grid,
+    GridItem,
+    HStack,
+    Image,
+    Input,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Select,
+    Text,
 } from "@chakra-ui/react"
-import $ from "jquery"
-import { useEffect, useState } from "react"
-import { axiosInstance } from "../api"
-import Book from "../components/Book"
-import plankton from "../assets/plankton.png"
-import libraryImage from "../assets/Reading glasses-bro.png"
+
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../api";
+import Book from "../components/Book";
+
+import { Link } from "react-router-dom";
+import plankton from "../assets/plankton.png";
+import libraryImage from "../assets/Reading glasses-bro.png";
+
 
 const Home = () => {
-  const [books, setBooks] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(1)
-  const [maxPage, setMaxPage] = useState(1)
+    const [books, setBooks] = useState([])
+    const [totalCount, setTotalCount] = useState(0)
+    const [page, setPage] = useState(1)
+    const [maxPage, setMaxPage] = useState(1)
+
 
   const [sortBy, setSortBy] = useState("")
   const [sortDir, setSortDir] = useState("")
   const [filter, setFilter] = useState("")
 
-  const fetchBooks = async () => {
-    const maxItemsPerPage = 12
+
+    const fetchBooks = async () => {
+        const maxItemsPerPage = 12
+
 
     try {
       const response = await axiosInstance.get(`/books?`, {
@@ -45,8 +57,10 @@ const Home = () => {
       })
       console.log(response)
 
-      setTotalCount(response.data.dataCount)
-      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
+
+            setTotalCount(response.data.dataCount)
+            setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
+
 
       if (page === 1) {
         setBooks(response.data.data)
@@ -77,9 +91,6 @@ const Home = () => {
   const sortBookHandler = ({ target }) => {
     const { value } = target
 
-    setSortBy(value.split(" ")[0])
-    setSortDir(value.split(" ")[1])
-  }
 
   const filterBookHandler = ({ target }) => {
     const { value } = target
@@ -320,67 +331,184 @@ const Home = () => {
               gap={4}
               mt="15px"
             >
-              {renderBooks()}
-            </Grid>
+                <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                    <GridItem></GridItem>
+                    <GridItem>
+                        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                            <GridItem>
+                                <Box display={"flex"} mt="80px">
+                                    <Text
+                                        fontSize={"18px"}
+                                        my="auto"
+                                        mr={"20px"}
+                                        fontWeight="semibold"
+                                    >
+                                        Filter
+                                    </Text>
+                                    <Menu>
+                                        <MenuButton as={Button}>
+                                            Genre
+                                        </MenuButton>
+                                        <MenuList>
+                                            <MenuItem>Action</MenuItem>
+                                            <MenuItem>Adventure</MenuItem>
+                                            <MenuItem>Biography</MenuItem>
+                                            <MenuItem>Comedy</MenuItem>
+                                            <MenuItem>Coming Of Age</MenuItem>
+                                            <MenuItem>Education</MenuItem>
+                                            <MenuItem>Fantasy</MenuItem>
+                                            <MenuItem>Fiction</MenuItem>
+                                            <MenuItem>Historical</MenuItem>
+                                            <MenuItem>Religion</MenuItem>
+                                            <MenuItem>Romance</MenuItem>
+                                            <MenuItem>Sci-fi</MenuItem>
+                                            <MenuItem>Self-help book</MenuItem>
+                                        </MenuList>
+                                    </Menu>
+                                </Box>
+                            </GridItem>
+                            <GridItem>
+                                <Text
+                                    textAlign={"center"}
+                                    fontSize={"4xl"}
+                                    fontWeight={"bold"}
+                                    fontFamily="sans-serif"
+                                    justifyContent={"center"}
+                                    mt="30px"
+                                    id="ourbooks"
+                                >
+                                    Our Books
+                                </Text>
+                            </GridItem>
+                            <GridItem display={"flex"}>
+                                <Box
+                                    display={"flex"}
+                                    mt="80px"
+                                    justifyContent={"left"}
+                                >
+                                    <Input
+                                        placeholder="Search"
+                                        onChange={(event) => {
+                                            setInputFilter(event.target.value)
+                                        }}
+                                    />
+                                    <Button
+                                        ml={"1"}
+                                        bgColor="#43615f"
+                                        color={"white"}
+                                        onClick={filterBtnHandler}
+                                    >
+                                        Search
+                                    </Button>
+                                </Box>
+                                <Box
+                                    display={"flex"}
+                                    mt="80px"
+                                    justifyContent={"right"}
+                                >
+                                    <Text
+                                        fontSize={"18px"}
+                                        my="auto"
+                                        mr={"20px"}
+                                        ml={"20px"}
+                                        fontWeight="semibold"
+                                    >
+                                        Sort
+                                    </Text>
 
-            <Grid templateColumns="repeat(3, 1fr)" mt="15px">
-              <GridItem />
-              <GridItem />
-              <GridItem>
-                <HStack justifyContent={"end"} gap="2px">
-                  {page === 1 ? null : (
-                    <Button
-                      bgColor={"#43615f"}
-                      onClick={previouspage}
-                      color="white"
-                    >
-                      Prev
-                    </Button>
-                  )}
-                  {!books.length ? (
-                    <Alert status="warning">
-                      <AlertIcon />
-                      <AlertTitle>No posts found</AlertTitle>
-                    </Alert>
-                  ) : null}
-                  {page >= maxPage ? null : (
-                    <Button
-                      bgColor={"#43615f"}
-                      color="white"
-                      onClick={seeMoreBtnHandler}
-                      // isDisabled={books.length <= totalCount}
-                    >
-                      Next
-                    </Button>
-                  )}
-                </HStack>
-              </GridItem>
-            </Grid>
-          </GridItem>
-          <GridItem></GridItem>
-        </Grid>
+                                    <Select
+                                        width={"120px"}
+                                        onChange={sortBookHandler}
+                                    >
+                                        <option value="title ASC">A - Z</option>
+                                        <option value="title DESC">
+                                            Z - A
+                                        </option>
+                                        <option value="publish_date DESC">
+                                            Latest
+                                        </option>
+                                        <option value="publish_date ASC">
+                                            Old
+                                        </option>
+                                    </Select>
+                                </Box>
+                            </GridItem>
+                        </Grid>
+                        <Grid
+                            templateColumns={{
+                                md: "repeat(3, 1fr)",
+                                lg: "repeat(6, 1fr)",
+                                base: "repeat(2, 1fr)",
+                            }}
+                            gap={4}
+                            mt="15px"
+                        >
+                            {renderBooks()}
+                        </Grid>
 
-        <Box
-          backgroundColor={"#43615f"}
-          textAlign={"center"}
-          padding={"30px"}
-          mt={"30px"}
-        >
-          <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
-            <Text fontWeight={"light"}>Contact Us</Text>
-            <a
-              href={
-                "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
-              }
-            >
-              chumbucket.library@gmail.com
-            </a>
-          </Text>
-          <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
-        </Box>
-      </Box>
-    </>
-  )
+                        <Grid templateColumns="repeat(3, 1fr)" mt="15px">
+                            <GridItem />
+                            <GridItem />
+                            <GridItem>
+                                <HStack justifyContent={"end"} gap="2px">
+                                    {page === 1 ? null : (
+                                        <Button
+                                            bgColor={"#43615f"}
+                                            onClick={previouspage}
+                                            color="white"
+                                        >
+                                            Prev
+                                        </Button>
+                                    )}
+                                    {!books.length ? (
+                                        <Alert status="warning">
+                                            <AlertIcon />
+                                            <AlertTitle>
+                                                No posts found
+                                            </AlertTitle>
+                                        </Alert>
+                                    ) : null}
+                                    {page >= maxPage ? null : (
+                                        <Button
+                                            bgColor={"#43615f"}
+                                            color="white"
+                                            onClick={seeMoreBtnHandler}
+                                            // isDisabled={books.length <= totalCount}
+                                        >
+                                            Next
+                                        </Button>
+                                    )}
+                                </HStack>
+                            </GridItem>
+                        </Grid>
+                    </GridItem>
+                    <GridItem></GridItem>
+                </Grid>
+
+                <Box
+                    backgroundColor={"#43615f"}
+                    textAlign={"center"}
+                    padding={"30px"}
+                    mt={"30px"}
+                >
+                    <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
+                        <Text fontWeight={"light"}>Contact Us</Text>
+                        <a
+                            href={
+                                "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
+                            }
+                        >
+                            chumbucket.library@gmail.com
+                        </a>
+                    </Text>
+                    <Text color={"white"}>
+                        Jl. Raya Bikini Bottom, Depan Krusty Krab
+                    </Text>
+                </Box>
+            </Box>
+        </>
+    )
 }
 
-export default Home
+
+export default Home;

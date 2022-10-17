@@ -14,6 +14,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import TransactionList from "./pages/TransactionList";
 
 
+
 const App = () => {
     const [authCheck, setAuthCheck] = useState(false)
     const dispatch = useDispatch()
@@ -77,6 +78,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/transaction"
           element={
@@ -85,9 +87,11 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
       </Routes>
     </>
   );
 };
 
 export default App;
+
