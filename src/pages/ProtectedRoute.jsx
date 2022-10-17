@@ -7,7 +7,6 @@ const ProtectedRoute = ({ children }) => {
     if (!authSelector.id) {
         return <Navigate replace to="/login" />
     }
-
     return children
 }
 

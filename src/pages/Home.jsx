@@ -20,13 +20,13 @@ import {
     Text,
 } from "@chakra-ui/react"
 
-import { useEffect, useState } from "react"
-import { axiosInstance } from "../api"
-import Book from "../components/Book"
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../api";
+import Book from "../components/Book";
 
-import { Link } from "react-router-dom"
-import plankton from "../assets/plankton.png"
-import libraryImage from "../assets/Reading glasses-bro.png"
+import { Link } from "react-router-dom";
+import plankton from "../assets/plankton.png";
+import libraryImage from "../assets/Reading glasses-bro.png";
 
 const Home = () => {
     const [books, setBooks] = useState([])
@@ -302,7 +302,6 @@ const Home = () => {
                                 </Box>
                             </GridItem>
                         </Grid>
-
                         <Grid
                             templateColumns={{
                                 md: "repeat(3, 1fr)",
@@ -379,4 +378,5 @@ const Home = () => {
     )
 }
 
-export default Home
+
+export default Home;
