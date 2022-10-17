@@ -1,3 +1,4 @@
+
 import { Box, Text } from "@chakra-ui/react";
 import { Routes, Route, Link } from "react-router-dom";
 import LoginPage from "./pages/login";
@@ -12,51 +13,36 @@ import GuestRoute from "./pages/GuestRoute";
 import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
+
 const App = () => {
-  const [authCheck, setAuthCheck] = useState(false);
-
-  const dispatch = useDispatch();
-
+    const [authCheck, setAuthCheck] = useState(false)
+    const dispatch = useDispatch()
   const keepUserLoggedIn = async () => {
     try {
-      // const auth_id = localStorage.getItem("auth_data");
-      // if (!auth_id) {
-      //   setAuthCheck(true);
-      //   return;
-      // }
-      // const response = await axiosInstance.get(`/users/${auth_id}`);
-      // // auth dari local storage
-      // dispatch(login(response.data));
-      // setAuthCheck(true);
-      // // ini cuma response.data doang karena bentuknya udah object
-      // // kenapa id menjadi object karena dia bersifat unik
+            const auth_token = localStorage.getItem("auth_token")
 
-      const auth_token = localStorage.getItem("auth_token");
+            if (!auth_token) {
+                setAuthCheck(true)
+                return
+            }
 
-      if (!auth_token) {
-        setAuthCheck(true);
-        return;
-      }
-
-      const response = await axiosInstance.get("/auth/refresh-token");
-
+            const response = await axiosInstance.get("/auth/refresh-token")
       dispatch(login(response.data.data));
       localStorage.setItem("auth_token", response.data.token);
-      // ini update redux dan local storage
     } catch (err) {
       console.log(err);
     } finally {
       setAuthCheck(true);
     }
-  };
+   }
 
-  useEffect(() => {
-    keepUserLoggedIn();
-  }, []);
+    useEffect(() => {
+        keepUserLoggedIn()
+    }, [])
 
-  if (!authCheck) {
-    return <div>Loading...</div>;
-  }
+    if (!authCheck) {
+        return <div>Loading...</div>
+    }
 
   return (
     <>
