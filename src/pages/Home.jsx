@@ -13,7 +13,7 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react"
-import $ from "jquery"
+
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
 import Book from "../components/Book"
