@@ -1,3 +1,4 @@
+
 import axios from "axios"
 import { logout } from "../redux/features/authSlice"
 import { store } from "../redux/store"
@@ -29,6 +30,8 @@ axiosInstance.interceptors.response.use(
 
     return Promise.reject(resError)
   }
+
 )
 
 export { axiosInstance }
+

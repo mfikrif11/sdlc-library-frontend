@@ -1,4 +1,3 @@
-
 import {
   Box,
   Button,
@@ -16,13 +15,16 @@ import {
   MenuDivider,
   Portal,
   Flex,
+  Image,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import GuestRoute from "../pages/GuestRoute";
 import ProtectedRoute from "../pages/ProtectedRoute";
 import { logout } from "../redux/features/authSlice";
-import { AiFillDatabase } from "react-icons/ai";
+import { AiFillDatabase, AiOutlineShoppingCart } from "react-icons/ai";
+import chumBucket from "../assets/cumbucket.jpg";
+import { BiBookReader } from "react-icons/bi";
 
 const Navbar = () => {
   const authSelector = useSelector((state) => state.auth);
@@ -42,7 +44,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-
   return (
     <Box
       backgroundColor={"#43615f"}
@@ -53,9 +54,81 @@ const Navbar = () => {
       zIndex={"999"}
       position="fixed"
     >
-
       {/* menu bar di HP */}
       <Flex flex={1}>
+        <Box
+          flex={1}
+          display={{
+            lg: "none",
+          }}
+        >
+          <Box textAlign={"left"} padding={"4"} fontSize={"2xl"}>
+            {authSelector.username ? (
+              <>
+                <Box display={"flex"}>
+                  <Text>Hi, {authSelector.username}!</Text>
+                  {/* btn cart */}
+                  {location.pathname === "/cart" ? null : (
+                    <Link to={"/cart"}>
+                      <Button
+                        bgColor={"#1b3c4b"}
+                        fontSize={"2xl"}
+                        ml={"10px"}
+                        _hover={"none"}
+                        _active={"none"}
+                      >
+                        <AiOutlineShoppingCart />
+                        <Box
+                          fontSize={"smaller"}
+                          backgroundColor={"#43615f"}
+                          borderRadius={"50%"}
+                          _hover={"active"}
+                          ml={"4px"}
+                          pt={"1px"}
+                          pr={"10px"}
+                          pb={"2px"}
+                          pl={"8px"}
+                        >
+                          1
+                        </Box>
+                      </Button>
+                    </Link>
+                  )}
+                  {location.pathname === "/transaction" ? null : (
+                    <Link to="/transaction">
+                      <Button
+                        bgColor={"#1b3c4b"}
+                        fontSize={"2xl"}
+                        _hover={"none"}
+                        _active={"none"}
+                        ml={"10px"}
+                      >
+                        <BiBookReader />
+                        <Box
+                          fontSize={"smaller"}
+                          backgroundColor={"red.500"}
+                          borderRadius={"50%"}
+                          ml={"4px"}
+                          pt={"1px"}
+                          pr={"10px"}
+                          pb={"2px"}
+                          pl={"8px"}
+                        >
+                          !
+                        </Box>
+                      </Button>
+                    </Link>
+                  )}
+                  {/* btn cart */}
+                </Box>
+              </>
+            ) : (
+              <Link to="/">
+                <Text>ChumBucket</Text>
+              </Link>
+            )}
+          </Box>
+        </Box>
         <Menu>
           <MenuButton
             display={{
@@ -71,9 +144,12 @@ const Navbar = () => {
               <Link to={"/"}>
                 <MenuItem>Home</MenuItem>
               </Link>
-
               {authSelector.username ? (
                 <MenuItem onClick={logoutBtnHandler}>Logout</MenuItem>
+              ) : location.pathname === "/login" ? (
+                <Link to={"/register"}>
+                  <MenuItem>Register</MenuItem>
+                </Link>
               ) : (
                 <Link to={"/login"}>
                   <MenuItem>Login</MenuItem>
@@ -82,16 +158,6 @@ const Navbar = () => {
             </MenuList>
           </Portal>
         </Menu>
-        <Box
-          flex={1}
-          display={{
-            lg: "none",
-          }}
-        >
-          <Text textAlign={"right"} padding={"4"} fontSize={"2xl"}>
-            {authSelector.username}
-          </Text>
-        </Box>
       </Flex>
 
       {/* menu bar di laptop */}
@@ -111,7 +177,6 @@ const Navbar = () => {
               ChumBucket
             </Text>
           </Link>
-
         </GridItem>
         <GridItem
           display={"flex"}
@@ -120,15 +185,76 @@ const Navbar = () => {
           padding="2"
           my={"auto"}
         >
-
           {authSelector.username ? (
-            <Button bgColor={"red.500"} onClick={logoutBtnHandler}>
-              Logout
-            </Button>
+            // btncart
+            location.pathname === "/cart" ? null : (
+              <Link to="/cart">
+                <Button
+                  bgColor={"#1b3c4b"}
+                  fontSize={"2xl"}
+                  _hover={"none"}
+                  _active={"none"}
+                >
+                  <AiOutlineShoppingCart />
+                  <Box
+                    fontSize={"smaller"}
+                    backgroundColor={"#43615f"}
+                    borderRadius={"50%"}
+                    ml={"4px"}
+                    pt={"1px"}
+                    pr={"10px"}
+                    pb={"2px"}
+                    pl={"8px"}
+                  >
+                    1
+                  </Box>
+                </Button>
+              </Link>
+            )
+          ) : // btncart
+          null}
+          {authSelector.username ? (
+            <>
+              {location.pathname === "/transaction" ? null : (
+                <Link to="/transaction">
+                  <Button
+                    bgColor={"#1b3c4b"}
+                    fontSize={"2xl"}
+                    _hover={"none"}
+                    _active={"none"}
+                  >
+                    <BiBookReader />
+                    <Box
+                      fontSize={"smaller"}
+                      backgroundColor={"red.500"}
+                      borderRadius={"50%"}
+                      ml={"4px"}
+                      pt={"1px"}
+                      pr={"10px"}
+                      pb={"2px"}
+                      pl={"8px"}
+                    >
+                      !
+                    </Box>
+                  </Button>
+                </Link>
+              )}
+
+              <Button
+                bgColor={"red.500"}
+                onClick={logoutBtnHandler}
+                _hover={"none"}
+                _active={"none"}
+              >
+                Logout
+              </Button>
+            </>
           ) : location.pathname === "/login" ||
             location.pathname === "/register" ? null : (
             <Link to={"/login"}>
-              <Button bgColor={"#1b3c4b"}>Login</Button>
+              <Button bgColor={"#1b3c4b"} _hover={"none"} _active={"none"}>
+                Login
+              </Button>
             </Link>
           )}
           {/* <Link to={"/register"}>Register</Link> */}
@@ -139,4 +265,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
