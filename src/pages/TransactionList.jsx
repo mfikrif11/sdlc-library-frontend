@@ -28,6 +28,8 @@ const TransactionList = () => {
           loan_status={val.loan_status}
           total_quantity={val.total_quantity}
           TransactionItems={val.TransactionItems}
+          id={val.id}
+          fetchTransaction={fetchTransaction}
         />
       )
     })

@@ -14,17 +14,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import { useEffect, useState } from "react";
-import { axiosInstance } from "../api";
-import Book from "../components/Book";
-import plankton from "../assets/plankton.png";
-import libraryImage from "../assets/Reading glasses-bro.png";
+
+import { useEffect, useRef, useState } from "react"
+import { axiosInstance } from "../api"
+import Book from "../components/Book"
+import plankton from "../assets/plankton.png"
+import libraryImage from "../assets/Reading glasses-bro.png"
 
 const Home = () => {
-  const [books, setBooks] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(1);
+  const bookRef = useRef(null)
+  const [books, setBooks] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(1)
+
 
   const [sortBy, setSortBy] = useState("");
   const [sortDir, setSortDir] = useState("");
@@ -84,9 +87,9 @@ const Home = () => {
   const filterBookHandler = ({ target }) => {
     const { value } = target;
 
-    setFilter(value);
-  };
-  // console.log(filterBookHandler)
+    setFilter(value)
+  }
+
 
   const seeMoreBtnHandler = () => {
     setPage(page + 1);
@@ -157,17 +160,22 @@ const Home = () => {
                     </Text>
                   </Text>
                 </Box>
-                <a href="#ourbooks" className="page-scroll">
-                  <Button
-                    margin={"39px auto 0 0"}
-                    padding="16px 54px 17px 53px"
-                    backgroundColor={"#43615f"}
-                    color="white"
-                    borderRadius={"20px"}
-                  >
-                    See Books
-                  </Button>
-                </a>
+
+                <Button
+                  margin={"39px auto 0 0"}
+                  padding="16px 54px 17px 53px"
+                  backgroundColor={"#43615f"}
+                  color="white"
+                  borderRadius={"20px"}
+                  onClick={() => {
+                    window.scrollTo({
+                      top: bookRef.current.offsetTop + 46,
+                      behavior: "smooth",
+                    })
+                  }}
+                >
+                  See Books
+                </Button>
               </GridItem>
               <GridItem></GridItem>
             </Grid>
@@ -244,6 +252,7 @@ const Home = () => {
               justifyContent={"center"}
               my={"auto"}
               id="ourbooks"
+              ref={bookRef}
             >
               Our Books
             </Text>

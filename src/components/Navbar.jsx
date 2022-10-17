@@ -16,33 +16,33 @@ import {
   Portal,
   Flex,
   Image,
-} from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import GuestRoute from "../pages/GuestRoute";
-import ProtectedRoute from "../pages/ProtectedRoute";
-import { logout } from "../redux/features/authSlice";
-import { AiFillDatabase, AiOutlineShoppingCart } from "react-icons/ai";
-import chumBucket from "../assets/cumbucket.jpg";
-import { BiBookReader } from "react-icons/bi";
+} from "@chakra-ui/react"
+import { useDispatch, useSelector } from "react-redux"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import GuestRoute from "../pages/GuestRoute"
+import ProtectedRoute from "../pages/ProtectedRoute"
+import { logout } from "../redux/features/authSlice"
+import { AiFillDatabase, AiOutlineShoppingCart } from "react-icons/ai"
+import chumBucket from "../assets/cumbucket.jpg"
+import { BiBookReader } from "react-icons/bi"
 
 const Navbar = () => {
-  const authSelector = useSelector((state) => state.auth);
+  const authSelector = useSelector((state) => state.auth)
 
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const toast = useToast();
-  const navigate = useNavigate();
+  const location = useLocation()
+  const dispatch = useDispatch()
+  const toast = useToast()
+  const navigate = useNavigate()
 
   const logoutBtnHandler = () => {
-    localStorage.removeItem("auth_token");
-    dispatch(logout());
+    localStorage.removeItem("auth_token")
+    dispatch(logout())
     toast({
       title: "User Logout",
       status: "info",
-    });
-    navigate("/");
-  };
+    })
+    navigate("/")
+  }
 
   return (
     <Box
@@ -53,6 +53,7 @@ const Navbar = () => {
       left="0"
       zIndex={"999"}
       position="fixed"
+      height={"72px"}
     >
       {/* menu bar di HP */}
       <Flex flex={1}>
@@ -261,7 +262,7 @@ const Navbar = () => {
         </GridItem>
       </Grid>
     </Box>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

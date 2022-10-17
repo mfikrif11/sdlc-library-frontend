@@ -1,5 +1,6 @@
-import { Box, Button, Grid, GridItem, Text } from "@chakra-ui/react"
+import { Box, Button, Grid, GridItem, Text, useToast } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
+import { Link, Navigate } from "react-router-dom"
 
 import { axiosInstance } from "../api"
 import TransactionItem from "./TransactionItem"
@@ -10,18 +11,32 @@ const Transaction = ({
   loan_status,
   TransactionItems,
   total_quantity,
+  id,
+  fetchTransaction,
 }) => {
-  //   const [returnBook, setReturnBook] = useState("")
+  const toast = useToast()
+  //   const [TransactionItem, setTransactionItem] = useState([])
 
-  //   const returnTransactionItem = async () => {
-  //     try {
-  //       const response = await axiosInstance.patch("/returnStatus/:id", {})
-  //       setTransactionItem(response.data.data)
-  //       console.log(response)
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
+  const returnTransactionItem = async () => {
+    try {
+      const a = {
+        loan_status: "Loan returned",
+      }
+      await axiosInstance.patch(`/transactions/returnStatus/${id}`, a)
+      fetchTransaction()
+
+      toast({
+        title: "Add success",
+        status: "success",
+      })
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "error",
+        status: "error",
+      })
+    }
+  }
 
   const renderTransactionItem = () => {
     return TransactionItems.map((val) => {
@@ -47,8 +62,8 @@ const Transaction = ({
   //     fetchTransactionItem()
   //   }, [])
   //   useEffect(() => {
-  //     returnTransactionItem()
-  //   }, [returnBook])
+  //     fetchTransaction()
+  //   }, [])
   return (
     <>
       <Box bgColor={"lightgray"} p={"4"} borderRadius="15px" mb="4">
@@ -92,17 +107,18 @@ const Transaction = ({
             </Box>
           </Box>
         </Grid>
-        <Box>
-          <Button
-            bgColor={"#43615f"}
-            color="white"
-            justifyContent={"end"}
-            value="Loan returned"
-            // onClick={returnBookHandler}
-          >
-            Return
-          </Button>
-        </Box>
+        <Grid>
+          <GridItem textAlign="right">
+            <Button
+              bgColor={"#43615f"}
+              color="white"
+              value="Loan returned"
+              onClick={() => returnTransactionItem()}
+            >
+              Return
+            </Button>
+          </GridItem>
+        </Grid>
       </Box>
     </>
   )
