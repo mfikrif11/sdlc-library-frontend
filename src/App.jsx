@@ -1,4 +1,3 @@
-
 import { Box, Text } from "@chakra-ui/react";
 import { Routes, Route, Link } from "react-router-dom";
 import LoginPage from "./pages/login";
@@ -12,6 +11,8 @@ import { axiosInstance } from "./api";
 import GuestRoute from "./pages/GuestRoute";
 import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import TransactionList from "./pages/TransactionList";
+
 
 
 const App = () => {
@@ -77,9 +78,20 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/transaction"
+          element={
+            <ProtectedRoute>
+              <TransactionList />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </>
   );
 };
 
 export default App;
+
