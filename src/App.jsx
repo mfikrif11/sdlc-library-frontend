@@ -1,4 +1,3 @@
-
 import { Box, Text } from "@chakra-ui/react";
 import { Routes, Route, Link } from "react-router-dom";
 import LoginPage from "./pages/login";
@@ -10,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "./redux/features/authSlice";
 import { axiosInstance } from "./api";
 import GuestRoute from "./pages/GuestRoute";
+import CartPage from "./pages/CartPage";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const App = () => {
   const [authCheck, setAuthCheck] = useState(false);
@@ -17,7 +18,6 @@ const App = () => {
   const dispatch = useDispatch();
 
   const keepUserLoggedIn = async () => {
-    setAuthCheck(true);
     try {
       // const auth_id = localStorage.getItem("auth_data");
       // if (!auth_id) {
@@ -45,6 +45,7 @@ const App = () => {
       // ini update redux dan local storage
     } catch (err) {
       console.log(err);
+    } finally {
       setAuthCheck(true);
     }
   };
@@ -82,10 +83,17 @@ const App = () => {
           }
         />
         <Route path="/" element={<Home />} />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
 };
 
 export default App;
-

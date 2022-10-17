@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -19,6 +20,7 @@ import * as Yup from "yup";
 import { axiosInstance } from "../api";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/features/authSlice";
+import planktonLaugh from "../assets/planktonhaha.png";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -80,14 +82,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Box
-      padding={"40px"}
-      bg={"lightgrey"}
-      pr={"40px"}
-      pl={"40px"}
-      pt={"100px"}
-      pb={"40px"}
-    >
+    <Box bg={"lightgrey"} pr={"40px"} pl={"40px"} pt={"100px"} pb={"40px"}>
       <Flex
         direction={{
           base: "column",
@@ -97,7 +92,7 @@ const LoginPage = () => {
       >
         {/* nanti tambahin direction */}
         {/* di set responsivenya */}
-        <Box flex="1">
+        <Box flex="1" bg={"white"}>
           <Image
             src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1528&q=80"
             height={"100%"}
@@ -108,13 +103,12 @@ const LoginPage = () => {
           <Text
             fontWeight={"700"}
             fontSize={"2.25rem"}
-            // di set responsivenya
             textAlign={"center"}
             mt={"30px"}
           >
             Hello Readers!
           </Text>
-          <Box pr={"40px"} pl={"40px"} mt={{ lg: "120px" }} mb={"30px"}>
+          <Box pr={"40px"} pl={"40px"} mt={{ lg: "100px" }} mb={"30px"}>
             {/* form */}
             <form onSubmit={formik.handleSubmit}>
               <FormControl mt={"10px"} isInvalid={formik.errors.NIM}>
@@ -163,7 +157,6 @@ const LoginPage = () => {
             </form>
             {/* form */}
             <Box textAlign={"right"}>
-
               <Link to={"/register"}>
                 <Text fontSize={"smaller"} mt={"10px"}>
                   Don't Have an Account?
