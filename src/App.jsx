@@ -13,37 +13,37 @@ import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import TransactionList from "./pages/TransactionList";
 
-
-
 const App = () => {
-    const [authCheck, setAuthCheck] = useState(false)
-    const dispatch = useDispatch()
+  const [authCheck, setAuthCheck] = useState(false);
+  const dispatch = useDispatch();
   const keepUserLoggedIn = async () => {
     try {
-            const auth_token = localStorage.getItem("auth_token")
+      const auth_token = localStorage.getItem("auth_token");
 
-            if (!auth_token) {
-                setAuthCheck(true)
-                return
-            }
+      if (!auth_token) {
+        setAuthCheck(true);
+        return;
+      }
 
-            const response = await axiosInstance.get("/auth/refresh-token")
+      const response = await axiosInstance.get("/auth/refresh-token");
       dispatch(login(response.data.data));
       localStorage.setItem("auth_token", response.data.token);
+      setAuthCheck(true);
     } catch (err) {
       console.log(err);
+      setAuthCheck(true);
     } finally {
       setAuthCheck(true);
     }
-   }
+  };
 
-    useEffect(() => {
-        keepUserLoggedIn()
-    }, [])
+  useEffect(() => {
+    keepUserLoggedIn();
+  }, []);
 
-    if (!authCheck) {
-        return <div>Loading...</div>
-    }
+  if (!authCheck) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -87,11 +87,9 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
       </Routes>
     </>
   );
 };
 
 export default App;
-

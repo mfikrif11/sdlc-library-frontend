@@ -12,26 +12,26 @@ import {
   Input,
   Select,
   Text,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
-import { useEffect, useState } from "react"
-import { axiosInstance } from "../api"
-import Book from "../components/Book"
-import plankton from "../assets/plankton.png"
-import libraryImage from "../assets/Reading glasses-bro.png"
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../api";
+import Book from "../components/Book";
+import plankton from "../assets/plankton.png";
+import libraryImage from "../assets/Reading glasses-bro.png";
 
 const Home = () => {
-  const [books, setBooks] = useState([])
-  const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(1)
-  const [maxPage, setMaxPage] = useState(1)
+  const [books, setBooks] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("")
-  const [sortDir, setSortDir] = useState("")
-  const [filter, setFilter] = useState("")
+  const [sortBy, setSortBy] = useState("");
+  const [sortDir, setSortDir] = useState("");
+  const [filter, setFilter] = useState("");
 
   const fetchBooks = async () => {
-    const maxItemsPerPage = 12
+    const maxItemsPerPage = 12;
 
     try {
       const response = await axiosInstance.get(`/books?`, {
@@ -42,21 +42,21 @@ const Home = () => {
           _sortDir: sortDir,
           genre: filter,
         },
-      })
-      console.log(response)
+      });
+      console.log(response);
 
-      setTotalCount(response.data.dataCount)
-      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
+      setTotalCount(response.data.dataCount);
+      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage));
 
       if (page === 1) {
-        setBooks(response.data.data)
+        setBooks(response.data.data);
       } else {
-        setBooks(response.data.data)
+        setBooks(response.data.data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const renderBooks = () => {
     return books.map((val) => {
@@ -70,33 +70,33 @@ const Home = () => {
           publish_date={val.publish_date}
           id={val.id}
         />
-      )
-    })
-  }
+      );
+    });
+  };
 
   const sortBookHandler = ({ target }) => {
-    const { value } = target
+    const { value } = target;
 
-    setSortBy(value.split(" ")[0])
-    setSortDir(value.split(" ")[1])
-  }
+    setSortBy(value.split(" ")[0]);
+    setSortDir(value.split(" ")[1]);
+  };
 
   const filterBookHandler = ({ target }) => {
-    const { value } = target
+    const { value } = target;
 
-    setFilter(value)
-  }
-  console.log(filterBookHandler)
+    setFilter(value);
+  };
+  // console.log(filterBookHandler)
 
   const seeMoreBtnHandler = () => {
-    setPage(page + 1)
-  }
+    setPage(page + 1);
+  };
   const previouspage = () => {
-    setPage(page - 1)
-  }
+    setPage(page - 1);
+  };
   useEffect(() => {
-    fetchBooks()
-  }, [page, sortBy, sortDir, filter])
+    fetchBooks();
+  }, [page, sortBy, sortDir, filter]);
 
   return (
     <>
@@ -380,7 +380,7 @@ const Home = () => {
         </Box>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -23,8 +23,45 @@ const CartPage = () => {
   const fetchCart = async () => {
     try {
       const response = await axiosInstance.get("/carts");
+      // console.log(response.data.data);
+      console.log(response);
 
       setCartItems(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // console.log(showBookId);
+
+  // console.log(showBookId);
+
+  const checkOutBtnHandler = async () => {
+    const showBookId = cartItems.map((val) => {
+      return {
+        CartId: val.id,
+        BookId: val.BookId,
+        quantity: 1,
+      };
+    });
+
+    try {
+      let checkOutItem = {
+        items: [...showBookId],
+      };
+
+      console.log(checkOutItem);
+
+      // let checkOutItemJSON = JSON.stringify(checkOutItem);
+
+      await axiosInstance.post("/carts/checkOut", checkOutItem);
+
+      fetchCart();
+
+      toast({
+        title: "checked out",
+        status: "success",
+      });
     } catch (error) {
       console.log(error);
     }
@@ -114,7 +151,12 @@ const CartPage = () => {
             textAlign={"right"}
             pt={"30px"}
           >
-            <Button mb={"20px"} bgColor={"#1b3c4b"} color={"white"}>
+            <Button
+              mb={"20px"}
+              bgColor={"#1b3c4b"}
+              color={"white"}
+              onClick={checkOutBtnHandler}
+            >
               Checkout
             </Button>
           </Box>
