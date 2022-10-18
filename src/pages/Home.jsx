@@ -12,8 +12,7 @@ import {
   Input,
   Select,
   Text,
-} from "@chakra-ui/react";
-
+} from "@chakra-ui/react"
 
 import { useEffect, useRef, useState } from "react"
 import { axiosInstance } from "../api"
@@ -23,18 +22,18 @@ import libraryImage from "../assets/Reading glasses-bro.png"
 
 const Home = () => {
   const bookRef = useRef(null)
+
   const [books, setBooks] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
 
-
-  const [sortBy, setSortBy] = useState("");
-  const [sortDir, setSortDir] = useState("");
-  const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("")
+  const [sortDir, setSortDir] = useState("")
+  const [filter, setFilter] = useState("")
 
   const fetchBooks = async () => {
-    const maxItemsPerPage = 12;
+    const maxItemsPerPage = 12
 
     try {
       const response = await axiosInstance.get(`/books?`, {
@@ -45,21 +44,21 @@ const Home = () => {
           _sortDir: sortDir,
           genre: filter,
         },
-      });
-      console.log(response);
+      })
+      console.log(response)
 
-      setTotalCount(response.data.dataCount);
-      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage));
+      setTotalCount(response.data.dataCount)
+      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
 
       if (page === 1) {
-        setBooks(response.data.data);
+        setBooks(response.data.data)
       } else {
-        setBooks(response.data.data);
+        setBooks(response.data.data)
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const renderBooks = () => {
     return books.map((val) => {
@@ -73,36 +72,38 @@ const Home = () => {
           publish_date={val.publish_date}
           id={val.id}
         />
-      );
-    });
-  };
+      )
+    })
+  }
 
   const sortBookHandler = ({ target }) => {
-    const { value } = target;
+    const { value } = target
 
-    setSortBy(value.split(" ")[0]);
-    setSortDir(value.split(" ")[1]);
-  };
+    setSortBy(value.split(" ")[0])
+    setSortDir(value.split(" ")[1])
+  }
 
   const filterBookHandler = ({ target }) => {
-    const { value } = target;
+    const { value } = target
 
     setFilter(value)
   }
 
-
   const seeMoreBtnHandler = () => {
-    setPage(page + 1);
-  };
+    setPage(page + 1)
+  }
+
   const previouspage = () => {
-    setPage(page - 1);
-  };
+    setPage(page - 1)
+  }
+
   useEffect(() => {
-    fetchBooks();
-  }, [page, sortBy, sortDir, filter]);
+    fetchBooks()
+  }, [page, sortBy, sortDir, filter])
 
   return (
     <>
+      {/* Welcome */}
       <Box marginTop="120px">
         <Grid
           templateColumns={{
@@ -169,7 +170,7 @@ const Home = () => {
                   borderRadius={"20px"}
                   onClick={() => {
                     window.scrollTo({
-                      top: bookRef.current.offsetTop + 46,
+                      top: bookRef.current.offsetTop + 23,
                       behavior: "smooth",
                     })
                   }}
@@ -183,7 +184,13 @@ const Home = () => {
         </Grid>
       </Box>
 
-      <Box backgroundColor={"#eff3f9"} height="auto" width={"fit-content"}>
+      {/* OurBooks */}
+      <Box
+        backgroundColor={"#eff3f9"}
+        height="auto"
+        width={"fit-content"}
+        pb="4"
+      >
         <Grid
           templateColumns={{
             base: "repeat(1, 1fr)",
@@ -243,6 +250,7 @@ const Home = () => {
               </Box>
             </Box>
           </GridItem>
+
           <GridItem>
             <Text
               textAlign={"center"}
@@ -257,6 +265,7 @@ const Home = () => {
               Our Books
             </Text>
           </GridItem>
+
           <GridItem display={"flex"}>
             <Box display={"flex"} marginX="auto">
               <Box display={"flex"} my={"auto"} mr="2">
@@ -272,6 +281,7 @@ const Home = () => {
               </Box>
             </Box>
           </GridItem>
+
           {/* hp & ipad */}
           <GridItem display={{ base: "flex", md: "flex", lg: "none" }}>
             <Box my="auto" display={"flex"} marginX="auto">
@@ -280,6 +290,7 @@ const Home = () => {
                   Filter
                 </Text>
               </Box>
+
               <Box mr={"6"}>
                 <Select onChange={filterBookHandler}>
                   <option value={"action"}>Action</option>
@@ -297,6 +308,7 @@ const Home = () => {
                   <option value={"self-help book"}>Self-help book</option>
                 </Select>
               </Box>
+
               <Box display={"flex"}>
                 <Text
                   fontSize={"18px"}
@@ -317,8 +329,11 @@ const Home = () => {
             </Box>
           </GridItem>
         </Grid>
+
+        {/* render books */}
         <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           <GridItem></GridItem>
+
           <GridItem>
             <Grid
               templateColumns={{
@@ -334,7 +349,17 @@ const Home = () => {
 
             <Grid templateColumns="repeat(3, 1fr)" mt="15px">
               <GridItem />
-              <GridItem />
+              <GridItem>
+                {!books.length ? (
+                  <Alert status="warning" bgColor={"#43615f"}>
+                    <AlertIcon />
+                    <AlertTitle color={"white"} fontWeight="light">
+                      No books found
+                    </AlertTitle>
+                  </Alert>
+                ) : null}
+              </GridItem>
+
               <GridItem>
                 <HStack justifyContent={"end"} gap="2px">
                   {page === 1 ? null : (
@@ -346,18 +371,12 @@ const Home = () => {
                       Prev
                     </Button>
                   )}
-                  {!books.length ? (
-                    <Alert status="warning">
-                      <AlertIcon />
-                      <AlertTitle>No posts found</AlertTitle>
-                    </Alert>
-                  ) : null}
+
                   {page >= maxPage ? null : (
                     <Button
                       bgColor={"#43615f"}
                       color="white"
                       onClick={seeMoreBtnHandler}
-                      // isDisabled={books.length <= totalCount}
                     >
                       Next
                     </Button>
@@ -366,30 +385,33 @@ const Home = () => {
               </GridItem>
             </Grid>
           </GridItem>
+
           <GridItem></GridItem>
         </Grid>
+      </Box>
 
-        <Box
-          backgroundColor={"#43615f"}
-          textAlign={"center"}
-          padding={"30px"}
-          mt={"30px"}
-        >
-          <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
-            <Text fontWeight={"light"}>Contact Us</Text>
-            <a
-              href={
-                "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
-              }
-            >
-              chumbucket.library@gmail.com
-            </a>
-          </Text>
-          <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
-        </Box>
+      {/* Contact Us */}
+      <Box
+        backgroundColor={"#43615f"}
+        textAlign={"center"}
+        padding={"30px"}
+        // mt={"30px"}
+      >
+        <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
+          <Text fontWeight={"light"}>Contact Us</Text>
+          <a
+            href={
+              "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
+            }
+          >
+            chumbucket.library@gmail.com
+          </a>
+        </Text>
+
+        <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

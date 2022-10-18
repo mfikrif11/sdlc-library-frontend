@@ -1,48 +1,68 @@
-import { Box, Text } from "@chakra-ui/react";
-import { Routes, Route, Link } from "react-router-dom";
-import LoginPage from "./pages/login";
-import RegisterPage from "./pages/register";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "./redux/features/authSlice";
-import { axiosInstance } from "./api";
-import GuestRoute from "./pages/GuestRoute";
-import CartPage from "./pages/CartPage";
-import ProtectedRoute from "./pages/ProtectedRoute";
-import TransactionList from "./pages/TransactionList";
+import { Box, Flex, Image, Spinner, Text } from "@chakra-ui/react"
+import { Routes, Route, Link } from "react-router-dom"
+import LoginPage from "./pages/login"
+import RegisterPage from "./pages/register"
+import Navbar from "./components/Navbar"
+import Home from "./pages/Home"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { login } from "./redux/features/authSlice"
+import { axiosInstance } from "./api"
+import GuestRoute from "./pages/GuestRoute"
+import CartPage from "./pages/CartPage"
+import ProtectedRoute from "./pages/ProtectedRoute"
+import TransactionList from "./pages/TransactionList"
+import loadingImage from "./assets/planktonhaha.png"
 
 const App = () => {
-  const [authCheck, setAuthCheck] = useState(false);
-  const dispatch = useDispatch();
+  const [authCheck, setAuthCheck] = useState(false)
+  const dispatch = useDispatch()
   const keepUserLoggedIn = async () => {
     try {
-      const auth_token = localStorage.getItem("auth_token");
+      const auth_token = localStorage.getItem("auth_token")
 
       if (!auth_token) {
-        setAuthCheck(true);
-        return;
+        setAuthCheck(true)
+        return
       }
 
-      const response = await axiosInstance.get("/auth/refresh-token");
-      dispatch(login(response.data.data));
-      localStorage.setItem("auth_token", response.data.token);
-      setAuthCheck(true);
+      const response = await axiosInstance.get("/auth/refresh-token")
+      dispatch(login(response.data.data))
+      localStorage.setItem("auth_token", response.data.token)
+      setAuthCheck(true)
     } catch (err) {
-      console.log(err);
-      setAuthCheck(true);
+      console.log(err)
+      setAuthCheck(true)
     } finally {
-      setAuthCheck(true);
+      setAuthCheck(true)
     }
-  };
+  }
 
   useEffect(() => {
-    keepUserLoggedIn();
-  }, []);
+    keepUserLoggedIn()
+  }, [])
 
   if (!authCheck) {
-    return <div>Loading...</div>;
+    return (
+      <Box textAlign={"center"}>
+        <Box mt={"220px"}>
+          <Flex justifyContent={"center"}>
+            <Image display={"block"} src={loadingImage} width="200px" />
+          </Flex>
+          <Text p="4" fontWeight={"light"} fontSize="4xl">
+            Chumbucket
+          </Text>
+          <Spinner
+            thickness="3px"
+            speed="0.7s"
+            emptyColor="gray.200"
+            color="#43615f"
+            size="xl"
+          />
+        </Box>
+      </Box>
+      // <div>Loading...</div>
+    )
   }
 
   return (
@@ -89,7 +109,7 @@ const App = () => {
         />
       </Routes>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App
