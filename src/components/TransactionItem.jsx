@@ -1,13 +1,6 @@
 import { Box, Image, Text } from "@chakra-ui/react"
 
-const TransactionItem = ({
-  title,
-  author,
-  genre,
-  publish_date,
-  image_url,
-  BookId,
-}) => {
+const TransactionItem = ({ title, author, genre, publish_date, image_url }) => {
   return (
     <Box
       height={"auto"}
@@ -29,14 +22,18 @@ const TransactionItem = ({
             "https://cdn.gramedia.com/uploads/items/9786024246945_Laut-Bercerita.jpg"
           }
         />
+
         <Box ml={"20px"} my="auto">
           <Text fontSize={"22px"}>{title}</Text>
+
           <Text fontWeight={"normal"} fontSize={"15px"}>
             {author || "Diaa"}
           </Text>
+
           <Text fontWeight={"normal"} fontSize={"15px"}>
             {genre || "Entah"}
           </Text>
+
           <Text fontWeight={"normal"} fontSize={"15px"}>
             {publish_date || "1945"}
           </Text>

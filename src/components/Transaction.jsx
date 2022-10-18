@@ -1,6 +1,4 @@
 import { Box, Button, Grid, GridItem, Text, useToast } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-import { Link, Navigate } from "react-router-dom"
 
 import { axiosInstance } from "../api"
 import TransactionItem from "./TransactionItem"
@@ -11,11 +9,12 @@ const Transaction = ({
   loan_status,
   TransactionItems,
   total_quantity,
+  total_penalty,
   id,
   fetchTransaction,
+  is_penalty,
 }) => {
   const toast = useToast()
-  //   const [TransactionItem, setTransactionItem] = useState([])
 
   const returnTransactionItem = async () => {
     try {
@@ -26,13 +25,13 @@ const Transaction = ({
       fetchTransaction()
 
       toast({
-        title: "Add success",
+        title: "Loan Returned",
         status: "success",
       })
     } catch (error) {
       console.log(error)
       toast({
-        title: "error",
+        title: "Return Error",
         status: "error",
       })
     }
@@ -53,17 +52,6 @@ const Transaction = ({
     })
   }
 
-  //   const returnBookHandler = ({ target }) => {
-  //     const { value } = target
-  //     setReturnBook(value)
-  //   }
-
-  //   useEffect(() => {
-  //     fetchTransactionItem()
-  //   }, [])
-  //   useEffect(() => {
-  //     fetchTransaction()
-  //   }, [])
   return (
     <>
       <Box bgColor={"lightgray"} p={"4"} borderRadius="15px" mb="4">
@@ -89,34 +77,62 @@ const Transaction = ({
               <Text fontWeight={"light"} fontSize="19px">
                 Borrow Date
               </Text>
-              <Text>{borrow_date || "123123"}</Text>
+
+              <Text>{borrow_date}</Text>
+
               <Text fontWeight={"light"} fontSize="19px">
                 Due Date
               </Text>
-              <Text>{due_date || "chuaks"}</Text>
+
+              <Text>{due_date}</Text>
             </Box>
+
             <Box mx={"auto"} my="auto">
               <Text fontWeight={"light"} fontSize="19px">
                 Loan Status
               </Text>
-              <Text>{loan_status}</Text>
+
+              <Text>
+                {loan_status === "Loan returned" ? (
+                  <Text color={"green"}>Loan returned</Text>
+                ) : null}
+                {loan_status === "Waiting for return" ? (
+                  <Text color={"red"}>Waiting for return</Text>
+                ) : null}
+              </Text>
+
               <Text fontWeight={"light"} fontSize="19px">
                 Total Quantity
               </Text>
+
               <Text>{total_quantity}</Text>
+              {is_penalty ? (
+                <>
+                  <Text fontWeight={"light"} fontSize="19px">
+                    Total Penalty
+                  </Text>
+
+                  <Text>Rp. {total_penalty.toLocaleString()}</Text>
+                </>
+              ) : null}
+
+              {/* <Text>{total_penalty}</Text> */}
             </Box>
           </Box>
         </Grid>
+
         <Grid>
           <GridItem textAlign="right">
-            <Button
-              bgColor={"#43615f"}
-              color="white"
-              value="Loan returned"
-              onClick={() => returnTransactionItem()}
-            >
-              Return
-            </Button>
+            {loan_status === "Loan returned" ? null : (
+              <Button
+                bgColor={"#43615f"}
+                color="white"
+                value="Loan returned"
+                onClick={() => returnTransactionItem()}
+              >
+                Return
+              </Button>
+            )}
           </GridItem>
         </Grid>
       </Box>
