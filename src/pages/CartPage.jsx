@@ -5,28 +5,25 @@ import {
   Box,
   Button,
   Flex,
-  Image,
-  Spacer,
   Text,
   useToast,
-  VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../api";
 import Cart from "../components/Cart";
+import { fillCart } from "../redux/features/cartSlice";
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useDispatch();
+  const cartSelector = useSelector((state) => state.cart);
 
   const toast = useToast();
 
   const fetchCart = async () => {
     try {
       const response = await axiosInstance.get("/carts");
-      // console.log(response.data.data);
-      console.log(response);
 
-      setCartItems(response.data.data);
+      dispatch(fillCart(response.data.data));
     } catch (error) {
       console.log(error);
     }
@@ -37,7 +34,7 @@ const CartPage = () => {
   // console.log(showBookId);
 
   const checkOutBtnHandler = async () => {
-    const showBookId = cartItems.map((val) => {
+    const showBookId = cartSelector.data.map((val) => {
       return {
         CartId: val.id,
         BookId: val.BookId,
@@ -83,7 +80,7 @@ const CartPage = () => {
   };
 
   const renderCartItems = () => {
-    return cartItems.map((val) => {
+    return cartSelector.data.map((val) => {
       return (
         <Cart
           key={val.id.toString()}
@@ -97,10 +94,6 @@ const CartPage = () => {
       );
     });
   };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
 
   return (
     <>
@@ -130,17 +123,17 @@ const CartPage = () => {
               fontWeight={"bold"}
               fontStyle={"italic"}
             >
-              Total Items: {cartItems.length}
+              Total Items: {cartSelector.data.length}
             </Text>
           </Box>
           {/* cart items  */}
           {renderCartItems()}
           {/* cart items */}
-          {!cartItems.length ? (
+          {!cartSelector.data.length ? (
             <Box margin={"20px 20px 20px 20px"}>
               <Alert status="warning" borderRadius={"20px"}>
                 <AlertIcon />
-                <AlertTitle>No posts found</AlertTitle>
+                <AlertTitle>No Items found</AlertTitle>
               </Alert>
             </Box>
           ) : null}
@@ -151,14 +144,16 @@ const CartPage = () => {
             textAlign={"right"}
             pt={"30px"}
           >
-            <Button
-              mb={"20px"}
-              bgColor={"#1b3c4b"}
-              color={"white"}
-              onClick={checkOutBtnHandler}
-            >
-              Checkout
-            </Button>
+            {cartSelector.data.length ? (
+              <Button
+                mb={"20px"}
+                bgColor={"#1b3c4b"}
+                color={"white"}
+                onClick={checkOutBtnHandler}
+              >
+                Checkout
+              </Button>
+            ) : null}
           </Box>
         </Flex>
       </Box>

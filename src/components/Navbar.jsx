@@ -16,33 +16,51 @@ import {
   Portal,
   Flex,
   Image,
-} from "@chakra-ui/react"
-import { useDispatch, useSelector } from "react-redux"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import GuestRoute from "../pages/GuestRoute"
-import ProtectedRoute from "../pages/ProtectedRoute"
-import { logout } from "../redux/features/authSlice"
-import { AiFillDatabase, AiOutlineShoppingCart } from "react-icons/ai"
-import chumBucket from "../assets/cumbucket.jpg"
-import { BiBookReader } from "react-icons/bi"
+} from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import GuestRoute from "../pages/GuestRoute";
+import ProtectedRoute from "../pages/ProtectedRoute";
+import { logout } from "../redux/features/authSlice";
+import { AiFillDatabase, AiOutlineShoppingCart } from "react-icons/ai";
+import chumBucket from "../assets/cumbucket.jpg";
+import { BiBookReader } from "react-icons/bi";
+import { useEffect } from "react";
+import { axiosInstance } from "../api";
+import { fillCart } from "../redux/features/cartSlice";
 
 const Navbar = () => {
-  const authSelector = useSelector((state) => state.auth)
+  const authSelector = useSelector((state) => state.auth);
+  const cartSelector = useSelector((state) => state.cart);
 
-  const location = useLocation()
-  const dispatch = useDispatch()
-  const toast = useToast()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const logoutBtnHandler = () => {
-    localStorage.removeItem("auth_token")
-    dispatch(logout())
+    localStorage.removeItem("auth_token");
+    dispatch(logout());
     toast({
       title: "User Logout",
       status: "info",
-    })
-    navigate("/")
-  }
+    });
+    navigate("/");
+  };
+
+  const fetchCart = async () => {
+    try {
+      const response = await axiosInstance.get("/carts");
+
+      dispatch(fillCart(response.data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   return (
     <Box
@@ -197,18 +215,21 @@ const Navbar = () => {
                   _active={"none"}
                 >
                   <AiOutlineShoppingCart />
-                  <Box
-                    fontSize={"smaller"}
-                    backgroundColor={"#43615f"}
-                    borderRadius={"50%"}
-                    ml={"4px"}
-                    pt={"1px"}
-                    pr={"10px"}
-                    pb={"2px"}
-                    pl={"8px"}
-                  >
-                    1
-                  </Box>
+
+                  {cartSelector.data.length ? (
+                    <Box
+                      fontSize={"smaller"}
+                      backgroundColor={"#43615f"}
+                      borderRadius={"50%"}
+                      ml={"4px"}
+                      pt={"1px"}
+                      pr={"10px"}
+                      pb={"2px"}
+                      pl={"8px"}
+                    >
+                      {cartSelector.data.length}
+                    </Box>
+                  ) : null}
                 </Button>
               </Link>
             )
@@ -262,7 +283,7 @@ const Navbar = () => {
         </GridItem>
       </Grid>
     </Box>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
