@@ -13,6 +13,8 @@ import CartPage from "./pages/CartPage"
 import ProtectedRoute from "./pages/ProtectedRoute"
 import TransactionList from "./pages/TransactionList"
 import loadingImage from "./assets/planktonhaha.png"
+import AdminDashboard from "./pages/AdminDashboard"
+import AdminTransaction from "./pages/AdminTransaction"
 
 const App = () => {
   const [authCheck, setAuthCheck] = useState(false)
@@ -107,6 +109,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/transaction" element={<AdminTransaction />} />
       </Routes>
     </>
   )

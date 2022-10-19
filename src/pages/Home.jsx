@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Flex,
+  FormControl,
   Grid,
   GridItem,
   HStack,
@@ -19,6 +20,7 @@ import { axiosInstance } from "../api"
 import Book from "../components/Book"
 import plankton from "../assets/plankton.png"
 import libraryImage from "../assets/Reading glasses-bro.png"
+import { useFormik } from "formik"
 
 const Home = () => {
   const bookRef = useRef(null)
@@ -28,9 +30,21 @@ const Home = () => {
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
 
-  const [sortBy, setSortBy] = useState("")
-  const [sortDir, setSortDir] = useState("")
+  const [sortBy, setSortBy] = useState("title")
+  const [sortDir, setSortDir] = useState("ASC")
   const [filter, setFilter] = useState("")
+  const [inputSearch, setInputSearch] = useState("")
+  const [currentSearch, setCurrentSearch] = useState("")
+
+  const formik = useFormik({
+    initialValues: {
+      search: "",
+    },
+    onSubmit: ({ search }) => {
+      setCurrentSearch(search)
+      setPage(1)
+    },
+  })
 
   const fetchBooks = async () => {
     const maxItemsPerPage = 12
@@ -43,6 +57,8 @@ const Home = () => {
           _sortBy: sortBy,
           _sortDir: sortDir,
           genre: filter,
+          title: currentSearch,
+          author: currentSearch,
         },
       })
       console.log(response)
@@ -99,7 +115,12 @@ const Home = () => {
 
   useEffect(() => {
     fetchBooks()
-  }, [page, sortBy, sortDir, filter])
+  }, [page, sortBy, sortDir, filter, currentSearch])
+
+  const formChangeHandler = ({ target }) => {
+    const { name, value } = target
+    formik.setFieldValue(name, value)
+  }
 
   return (
     <>
@@ -269,15 +290,25 @@ const Home = () => {
           <GridItem display={"flex"}>
             <Box display={"flex"} marginX="auto">
               <Box display={"flex"} my={"auto"} mr="2">
-                <Input placeholder="Search" width={"auto"} />
-                <Button
-                  ml={"1"}
-                  bgColor="#43615f"
-                  color={"white"}
-                  onClick={filterBookHandler}
-                >
-                  Search
-                </Button>
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl isInvalid={formik.errors.search}>
+                    <Input
+                      placeholder="Search"
+                      name="search"
+                      width={"auto"}
+                      value={formik.values.search}
+                      onChange={formChangeHandler}
+                    />
+                    <Button
+                      ml={"1"}
+                      bgColor="#43615f"
+                      color={"white"}
+                      type="submit"
+                    >
+                      Search
+                    </Button>
+                  </FormControl>
+                </form>
               </Box>
             </Box>
           </GridItem>
