@@ -9,6 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { AiFillDelete } from "react-icons/ai";
+import Checkbox from "./Checkbox";
 
 const Cart = ({ image, title, author, genre, releasedYear, onDelete }) => {
   return (
@@ -94,6 +95,9 @@ const Cart = ({ image, title, author, genre, releasedYear, onDelete }) => {
         <VStack alignItems={"left"}>
           <Box bg={"lightgray"} borderRadius={"15px"}>
             <Flex color="black" fontWeight={"bold"}>
+              <Box ml={"20px"} mt={"60px"}>
+                <Checkbox />
+              </Box>
               <Box flex="0.5">
                 <Image
                   height={"140px"}
