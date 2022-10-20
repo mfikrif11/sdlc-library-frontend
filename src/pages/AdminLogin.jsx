@@ -14,7 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { axiosInstance } from "../api";
@@ -27,6 +27,8 @@ const LoginPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const navigate = useNavigate();
+
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
@@ -35,13 +37,13 @@ const LoginPage = () => {
 
   const formik = useFormik({
     initialValues: {
-      NIM: "",
+      usernameOrEmail: "",
       password: "",
     },
-    onSubmit: async ({ NIM, password }) => {
+    onSubmit: async ({ usernameOrEmail, password }) => {
       try {
-        const response = await axiosInstance.post("/auth/login", {
-          NIM,
+        const response = await axiosInstance.post("/admin/login", {
+          usernameOrEmail,
           password,
         });
         toast({
@@ -56,9 +58,13 @@ const LoginPage = () => {
             username: response.data.data.username,
             email: response.data.data.email,
             id: response.data.data.id,
+            NIM: response.data.data.NIM,
+            is_admin: response.data.data.is_admin,
           })
         );
-        formik.setFieldValue("NIM", "");
+
+        navigate("/admin/dashboard");
+        formik.setFieldValue("usernameOrEmail", "");
         formik.setFieldValue("password", "");
       } catch (err) {
         console.log(err);
@@ -70,7 +76,9 @@ const LoginPage = () => {
       }
     },
     validationSchema: Yup.object({
-      NIM: Yup.number().required(),
+      usernameOrEmail: Yup.string().required(
+        "username or email is required field"
+      ),
       password: Yup.string().required(),
     }),
     validateOnChange: false,
@@ -82,14 +90,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Box
-      bg={"lightgrey"}
-      pr={"40px"}
-      pl={"40px"}
-      pt={"100px"}
-      pb={"40px"}
-      height={{ base: "1000px", md: "1200px", lg: "auto" }}
-    >
+    <Box bg={"lightgrey"} pr={"40px"} pl={"40px"} pt={"100px"} pb={"40px"}>
       <Flex
         direction={{
           base: "column",
@@ -106,27 +107,33 @@ const LoginPage = () => {
             alt={"library"}
           />
         </Box>
-        <Box flex="1" bg="white" mt={{ md: "-220px", lg: "initial" }}>
+        <Box flex="1" bg="white">
           <Text
             fontWeight={"700"}
             fontSize={"2.25rem"}
             textAlign={"center"}
             mt={"30px"}
           >
-            Hello Readers!
+            Hello Admin!
           </Text>
           <Box pr={"40px"} pl={"40px"} mt={{ lg: "100px" }} mb={"30px"}>
             {/* form */}
             <form onSubmit={formik.handleSubmit}>
-              <FormControl mt={"10px"} isInvalid={formik.errors.NIM}>
-                <FormLabel>NIM</FormLabel>
+              <FormControl
+                mt={"10px"}
+                isInvalid={formik.errors.usernameOrEmail}
+              >
+                <FormLabel>Username or Email</FormLabel>
                 <Input
-                  type="number"
-                  placeholder="Enter your NIM"
-                  value={formik.values.NIM}
-                  name="NIM"
+                  type="text"
+                  placeholder="Enter your username or email"
+                  value={formik.values.usernameOrEmail}
+                  name="usernameOrEmail"
                   onChange={formChangeHandler}
                 />
+                <FormErrorMessage>
+                  {formik.errors.usernameOrEmail}
+                </FormErrorMessage>
               </FormControl>
               <FormControl mt={"10px"} isInvalid={formik.errors.password}>
                 <FormLabel>Password</FormLabel>
@@ -162,13 +169,6 @@ const LoginPage = () => {
               </Button>
             </form>
             {/* form */}
-            <Box textAlign={"right"}>
-              <Link to={"/register"}>
-                <Text fontSize={"smaller"} mt={"10px"}>
-                  Don't Have an Account?
-                </Text>
-              </Link>
-            </Box>
           </Box>
         </Box>
       </Flex>

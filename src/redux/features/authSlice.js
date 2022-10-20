@@ -5,6 +5,7 @@ const initialState = {
   username: "",
   email: "",
   NIM: 0,
+  is_admin: 0,
 };
 
 const authSlice = createSlice({
@@ -16,12 +17,14 @@ const authSlice = createSlice({
       state.username = action.payload.username;
       state.email = action.payload.email;
       state.NIM = action.payload.NIM;
+      state.is_admin = action.payload.is_admin;
     },
     logout: (state, action) => {
       state.id = 0;
       state.username = "";
       state.email = "";
       state.NIM = 0;
+      state.is_admin = 0;
     },
   },
 });

@@ -85,7 +85,12 @@ const Navbar = () => {
             {authSelector.username ? (
               <>
                 <Box display={"flex"}>
-                  <Text>Hi, {authSelector.username}!</Text>
+                  <Text
+                    fontSize={{ base: "smaller" }}
+                    marginTop={{ base: "5px" }}
+                  >
+                    Hi, {authSelector.username}!
+                  </Text>
                   {/* btn cart */}
                   {location.pathname === "/cart" ? null : (
                     <Link to={"/cart"}>
@@ -272,14 +277,14 @@ const Navbar = () => {
               </Button>
             </>
           ) : location.pathname === "/login" ||
-            location.pathname === "/register" ? null : (
+            location.pathname === "/register" ||
+            location.pathname === "/admin/login" ? null : (
             <Link to={"/login"}>
               <Button bgColor={"#1b3c4b"} _hover={"none"} _active={"none"}>
                 Login
               </Button>
             </Link>
           )}
-          {/* <Link to={"/register"}>Register</Link> */}
         </GridItem>
       </Grid>
     </Box>
