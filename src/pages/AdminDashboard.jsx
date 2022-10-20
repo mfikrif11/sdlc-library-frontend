@@ -5,6 +5,7 @@ import {
   FormLabel,
   Grid,
   GridItem,
+  HStack,
   Image,
   Input,
   Modal,
@@ -14,6 +15,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Table,
   TableContainer,
   Td,
@@ -35,20 +37,38 @@ const AdminDashboard = () => {
   const [books, setBooks] = useState([])
   const [openedDescription, setOpenedDescription] = useState(null)
   const [openedEdit, setOpenedEdit] = useState(null)
+  const [totalCount, setTotalCount] = useState(0)
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(1)
+
+  const [sortBy, setSortBy] = useState("title")
+  const [sortDir, setSortDir] = useState("ASC")
+  const [filter, setFilter] = useState(0)
+  const [currentSearch, setCurrentSearch] = useState("")
 
   const {
-    isOpen: isOpenAddNew,
-    onOpen: onOpenAddNew,
-    onClose: onCloseAddNew,
+    isOpen: isOpenAddNewBook,
+    onOpen: onOpenAddNewBook,
+    onClose: onCloseAddNewBook,
   } = useDisclosure()
 
   const toast = useToast()
+
+  const searchFormik = useFormik({
+    initialValues: {
+      search: "",
+    },
+    onSubmit: ({ search }) => {
+      setCurrentSearch(search)
+      setPage(1)
+    },
+  })
 
   const formik = useFormik({
     initialValues: {
       image_url: "",
       title: "",
-      genre: "",
+      CategoryId: "",
       author: "",
       publish_date: "",
       description: "",
@@ -57,7 +77,7 @@ const AdminDashboard = () => {
     onSubmit: async ({
       image_url,
       title,
-      genre,
+      CategoryId,
       author,
       publish_date,
       description,
@@ -67,7 +87,7 @@ const AdminDashboard = () => {
         const response = await axiosInstance.post("/admin/books", {
           image_url,
           title,
-          genre,
+          CategoryId,
           author,
           publish_date,
           description,
@@ -81,7 +101,7 @@ const AdminDashboard = () => {
         })
         formik.setFieldValue("image_url", "")
         formik.setFieldValue("title", "")
-        formik.setFieldValue("genre", "")
+        formik.setFieldValue("CategoryId", "")
         formik.setFieldValue("author", "")
         formik.setFieldValue("publish_date", "")
         formik.setFieldValue("description", "")
@@ -98,7 +118,7 @@ const AdminDashboard = () => {
     validationSchema: Yup.object({
       image_url: Yup.string().required(),
       title: Yup.string().required(),
-      genre: Yup.string().required(),
+      CategoryId: Yup.string().required(),
       author: Yup.string().required(),
       publish_date: Yup.string().required(),
       description: Yup.string().required(),
@@ -111,7 +131,7 @@ const AdminDashboard = () => {
     initialValues: {
       image_url: "",
       title: "",
-      genre: "",
+      CategoryId: "",
       author: "",
       publish_date: "",
       description: "",
@@ -120,7 +140,7 @@ const AdminDashboard = () => {
     onSubmit: async ({
       image_url,
       title,
-      genre,
+      CategoryId,
       author,
       publish_date,
       description,
@@ -132,7 +152,7 @@ const AdminDashboard = () => {
           {
             image_url,
             title,
-            genre,
+            CategoryId,
             author,
             publish_date,
             description,
@@ -147,7 +167,7 @@ const AdminDashboard = () => {
         })
         editFormik.setFieldValue("image_url", "")
         editFormik.setFieldValue("title", "")
-        editFormik.setFieldValue("genre", "")
+        editFormik.setFieldValue("CategoryId", "")
         editFormik.setFieldValue("author", "")
         editFormik.setFieldValue("publish_date", "")
         editFormik.setFieldValue("description", "")
@@ -176,7 +196,15 @@ const AdminDashboard = () => {
 
   const formChangeHandler = ({ target }) => {
     const { name, value } = target
+    // console.log(name, value)
     formik.setFieldValue(name, value)
+    // console.log(formik.values)
+  }
+
+  const searchChangeHandler = ({ target }) => {
+    const { name, value } = target
+
+    searchFormik.setFieldValue(name, value)
   }
 
   const editFormChangeHandler = ({ target }) => {
@@ -188,13 +216,49 @@ const AdminDashboard = () => {
     const maxItemsPerPage = 12
 
     try {
-      const response = await axiosInstance.get(`/books?`, {})
-      console.log(response)
+      const response = await axiosInstance.get(`/books?`, {
+        params: {
+          _page: page,
+          _limit: maxItemsPerPage,
+          _sortBy: sortBy,
+          _sortDir: sortDir,
+          CategoryId: filter,
+          title: currentSearch,
+          author: currentSearch,
+        },
+      })
+      setTotalCount(response.data.dataCount)
+      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
 
-      setBooks(response.data.data)
+      if (page === 1) {
+        setBooks(response.data.data)
+      } else {
+        setBooks(response.data.data)
+      }
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const sortBookHandler = ({ target }) => {
+    const { value } = target
+
+    setSortBy(value.split(" ")[0])
+    setSortDir(value.split(" ")[1])
+  }
+
+  const filterBookHandler = ({ target }) => {
+    const { value } = target
+
+    setFilter(value)
+  }
+
+  const seeMoreBtnHandler = () => {
+    setPage(page + 1)
+  }
+
+  const previouspage = () => {
+    setPage(page - 1)
   }
 
   const deleteBooksHandler = async (id) => {
@@ -216,61 +280,61 @@ const AdminDashboard = () => {
     return books.map((val) => {
       console.log(val)
       return (
-        <>
-          <Tr height={"200px"}>
-            <Td>
-              <Image src={val.image_url} />
-            </Td>
-            <Td>{val.title}</Td>
-            <Td>{val.genre}</Td>
-            <Td>{val.author}</Td>
-            <Td>{val.publish_date}</Td>
-            <Td>
-              <Button
-                onClick={() => setOpenedDescription(val)}
-                variant="unstyled"
-              >
-                Click here to see description
-              </Button>
-            </Td>
-            <Td>{val.stock_quantity}</Td>
-            <Td>
-              <Box>
-                <Box mb={"2"}>
-                  <Button
-                    bgColor={"green"}
-                    color="white"
-                    onClick={() => setOpenedEdit(val)}
-                  >
-                    Edit
-                  </Button>
-                </Box>
-                <Box>
-                  <Button
-                    bgColor={"red"}
-                    color="white"
-                    onClick={() => deleteBooksHandler(val.id)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
+        <Tr height={"200px"}>
+          <Td>
+            <Image src={val.image_url} />
+          </Td>
+          <Td>{val.title}</Td>
+          <Td>{val.Category.category_name}</Td>
+          <Td>{val.author}</Td>
+          <Td>{val.publish_date}</Td>
+          <Td>
+            <Button
+              onClick={() => setOpenedDescription(val)}
+              variant="unstyled"
+            >
+              Click here to <br /> see description
+            </Button>
+          </Td>
+          <Td>{val.stock_quantity}</Td>
+          <Td>
+            <Box>
+              <Box mb={"2"}>
+                <Button
+                  width={"100px"}
+                  colorScheme={"green"}
+                  color="white"
+                  onClick={() => setOpenedEdit(val)}
+                >
+                  Edit
+                </Button>
               </Box>
-            </Td>
-          </Tr>
-        </>
+              <Box>
+                <Button
+                  width={"100px"}
+                  bgColor={"red"}
+                  color="white"
+                  onClick={() => deleteBooksHandler(val.id)}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          </Td>
+        </Tr>
       )
     })
   }
 
   useEffect(() => {
     fetchBooks()
-  }, [openedEdit])
+  }, [openedEdit, page, sortBy, sortDir, filter, currentSearch])
 
   useEffect(() => {
     if (openedEdit) {
       editFormik.setFieldValue("image_url", openedEdit.image_url)
       editFormik.setFieldValue("title", openedEdit.title)
-      editFormik.setFieldValue("genre", openedEdit.genre)
+      editFormik.setFieldValue("genre", openedEdit.CategoryId)
       editFormik.setFieldValue("author", openedEdit.author)
       editFormik.setFieldValue("publish_date", openedEdit.publish_date)
       editFormik.setFieldValue("description", openedEdit.description)
@@ -281,8 +345,55 @@ const AdminDashboard = () => {
   return (
     <>
       <Box bg={"lightgrey"} p={"40px"} pt={"65px"}>
-        <Grid textAlign={"center"} templateColumns="repeat(3, 1fr)" p="4">
-          <GridItem></GridItem>
+        <Grid textAlign={"center"} templateColumns="1fr .7fr 1fr" p="6">
+          <GridItem>
+            <Box mt="12px" display={"flex"} marginX="auto" gap={2}>
+              <Select onChange={filterBookHandler}>
+                <option value={0}>All</option>
+                <option value={1}>Action</option>
+                <option value={2}>Adventure</option>
+                <option value={3}>Biography</option>
+                <option value={4}>Coming Of Age</option>
+                <option value={5}>Comedy</option>
+                <option value={6}>Education</option>
+                <option value={7}>Fantasy</option>
+                <option value={8}>Fiction</option>
+                <option value={9}>Historical</option>
+                <option value={10}>Religion</option>
+                <option value={11}>Romance</option>
+                <option value={12}>Sci-fi</option>
+                <option value={13}>Self-help book</option>
+              </Select>
+
+              <Select onChange={sortBookHandler}>
+                <option value="title ASC">A - Z</option>
+                <option value="title DESC">Z - A</option>
+                <option value="publish_date DESC">Latest</option>
+                <option value="publish_date ASC">Old</option>
+              </Select>
+
+              <form onSubmit={searchFormik.handleSubmit}>
+                <FormControl isInvalid={formik.errors.search} display="flex">
+                  <Input
+                    placeholder="Search"
+                    name="search"
+                    width={"150px"}
+                    value={searchFormik.values.search}
+                    onChange={searchChangeHandler}
+                  />
+                  <Button
+                    bgColor="#43615f"
+                    color={"white"}
+                    type="submit"
+                    ml="1"
+                    mb="1"
+                  >
+                    Search
+                  </Button>
+                </FormControl>
+              </form>
+            </Box>
+          </GridItem>
           <GridItem>
             <Text fontSize={"4xl"} fontWeight="bold">
               Admin Dashboard
@@ -292,25 +403,18 @@ const AdminDashboard = () => {
             <Button
               bgColor={"telegram.500"}
               color="white"
-              onClick={onOpenAddNew}
+              onClick={onOpenAddNewBook}
               mr="2"
             >
               Add New Book
             </Button>
-            <Button
-              bgColor={"telegram.500"}
-              color="white"
-              onClick={onOpenAddNew}
-            >
-              Add New Category
-            </Button>
           </GridItem>
         </Grid>
-        <TableContainer>
-          <Table variant="striped" colorScheme="#43615f" bgColor={"white"}>
+        <TableContainer borderRadius={"15px"}>
+          <Table variant="unstyled" colorScheme="#43615f" bgColor={"white"}>
             <Thead>
               <Tr>
-                <Th>Image</Th>
+                <Th w={"180px"}>Image</Th>
                 <Th>Title</Th>
                 <Th>Genre</Th>
                 <Th>Author</Th>
@@ -323,12 +427,29 @@ const AdminDashboard = () => {
             </Thead>
           </Table>
         </TableContainer>
+        <HStack justifyContent={"end"} gap="2px" mt={"4"}>
+          {page === 1 ? null : (
+            <Button bgColor={"#43615f"} onClick={previouspage} color="white">
+              Prev
+            </Button>
+          )}
+
+          {page >= maxPage ? null : (
+            <Button
+              bgColor={"#43615f"}
+              color="white"
+              onClick={seeMoreBtnHandler}
+            >
+              Next
+            </Button>
+          )}
+        </HStack>
       </Box>
 
       {/* Modal Add New Book*/}
       <Modal
-        isOpen={isOpenAddNew}
-        onClose={onCloseAddNew}
+        isOpen={isOpenAddNewBook}
+        onClose={onCloseAddNewBook}
         motionPreset="slideInBottom"
         size={"lg"}
       >
@@ -360,12 +481,22 @@ const AdminDashboard = () => {
                   </FormControl>
                   <FormControl isInvalid={formik.errors.genre}>
                     <FormLabel>Genre</FormLabel>
-                    <Input
-                      name="genre"
-                      type={"text"}
-                      onChange={formChangeHandler}
-                      value={formik.values.genre}
-                    />
+                    <Select name="CategoryId" onChange={formChangeHandler}>
+                      <option value={"All"}>All</option>
+                      <option value={1}>Action</option>
+                      <option value={2}>Adventure</option>
+                      <option value={3}>Biography</option>
+                      <option value={4}>Coming Of Age</option>
+                      <option value={5}>Comedy</option>
+                      <option value={6}>Education</option>
+                      <option value={7}>Fantasy</option>
+                      <option value={8}>Fiction</option>
+                      <option value={9}>Historical</option>
+                      <option value={10}>Religion</option>
+                      <option value={11}>Romance</option>
+                      <option value={12}>Sci-fi</option>
+                      <option value={13}>Self-help book</option>
+                    </Select>
                   </FormControl>
                   <FormControl isInvalid={formik.errors.author}>
                     <FormLabel>Author</FormLabel>
@@ -411,13 +542,13 @@ const AdminDashboard = () => {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="red" mr={3} onClick={onCloseAddNew}>
+              <Button colorScheme="red" mr={3} onClick={onCloseAddNewBook}>
                 Cancel
               </Button>
               <Button
                 colorScheme="green"
                 mr={3}
-                onClick={onCloseAddNew}
+                onClick={onCloseAddNewBook}
                 type="submit"
               >
                 Add New
@@ -476,12 +607,26 @@ const AdminDashboard = () => {
             </FormControl>
             <FormControl isInvalid={editFormik.errors.genre}>
               <FormLabel>Genre</FormLabel>
-              <Input
-                name="genre"
-                type={"text"}
+              <Select
+                name="CategoryId"
                 onChange={editFormChangeHandler}
-                value={editFormik.values.genre}
-              />
+                // defaultValue={openedEdit.image_url}
+              >
+                <option value={"All"}>All</option>
+                <option value={1}>Action</option>
+                <option value={2}>Adventure</option>
+                <option value={3}>Biography</option>
+                <option value={4}>Coming Of Age</option>
+                <option value={5}>Comedy</option>
+                <option value={6}>Education</option>
+                <option value={7}>Fantasy</option>
+                <option value={8}>Fiction</option>
+                <option value={9}>Historical</option>
+                <option value={10}>Religion</option>
+                <option value={11}>Romance</option>
+                <option value={12}>Sci-fi</option>
+                <option value={13}>Self-help book</option>
+              </Select>
             </FormControl>
             <FormControl isInvalid={editFormik.errors.author}>
               <FormLabel>Author</FormLabel>
