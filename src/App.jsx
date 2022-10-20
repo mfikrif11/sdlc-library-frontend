@@ -1,60 +1,59 @@
-import { Box, Flex, Image, Spinner, Text } from "@chakra-ui/react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
-import LoginPage from "./pages/login";
-import RegisterPage from "./pages/register";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "./redux/features/authSlice";
-import { axiosInstance } from "./api";
-import GuestRoute from "./pages/GuestRoute";
-import CartPage from "./pages/CartPage";
-import ProtectedRoute from "./pages/ProtectedRoute";
-import TransactionList from "./pages/TransactionList";
-import loadingImage from "./assets/planktonhaha.png";
-import AdminLogin from "./pages/AdminLogin";
-import NavbarAdmin from "./components/NavbarAdmin";
-import AdminTransaction from "./pages/AdminTransaction";
-import AdminDashboard from "./pages/AdminDashboard";
+import { Box, Flex, Image, Spinner, Text } from "@chakra-ui/react"
+import { Routes, Route, Link, useLocation } from "react-router-dom"
+import LoginPage from "./pages/login"
+import RegisterPage from "./pages/register"
+import Navbar from "./components/Navbar"
+import Home from "./pages/Home"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { login } from "./redux/features/authSlice"
+import { axiosInstance } from "./api"
+import GuestRoute from "./pages/GuestRoute"
+import CartPage from "./pages/CartPage"
+import ProtectedRoute from "./pages/ProtectedRoute"
+import TransactionList from "./pages/TransactionList"
+import loadingImage from "./assets/planktonhaha.png"
+import AdminLogin from "./pages/AdminLogin"
+import NavbarAdmin from "./components/NavbarAdmin"
+import AdminTransaction from "./pages/AdminTransaction"
+import AdminDashboard from "./pages/AdminDashboard"
 
 import AdminTransactionList from "./pages/AdminTransactionList"
 import AdminCategory from "./pages/AdminCategory"
 
-
 const App = () => {
-  const [authCheck, setAuthCheck] = useState(false);
-  const dispatch = useDispatch();
-  const authSelector = useSelector((state) => state.auth);
+  const [authCheck, setAuthCheck] = useState(false)
+  const dispatch = useDispatch()
+  const authSelector = useSelector((state) => state.auth)
 
-  console.log(authSelector);
+  console.log(authSelector)
 
-  const location = useLocation();
+  const location = useLocation()
 
   const keepUserLoggedIn = async () => {
     try {
-      const auth_token = localStorage.getItem("auth_token");
+      const auth_token = localStorage.getItem("auth_token")
 
       if (!auth_token) {
-        setAuthCheck(true);
-        return;
+        setAuthCheck(true)
+        return
       }
 
-      const response = await axiosInstance.get("/auth/refresh-token");
-      dispatch(login(response.data.data));
-      localStorage.setItem("auth_token", response.data.token);
-      setAuthCheck(true);
+      const response = await axiosInstance.get("/auth/refresh-token")
+      dispatch(login(response.data.data))
+      localStorage.setItem("auth_token", response.data.token)
+      setAuthCheck(true)
     } catch (err) {
-      console.log(err);
-      setAuthCheck(true);
+      console.log(err)
+      setAuthCheck(true)
     } finally {
-      setAuthCheck(true);
+      setAuthCheck(true)
     }
-  };
+  }
 
   useEffect(() => {
-    keepUserLoggedIn();
-  }, []);
+    keepUserLoggedIn()
+  }, [])
 
   if (!authCheck) {
     return (
@@ -76,7 +75,7 @@ const App = () => {
         </Box>
       </Box>
       // <div>Loading...</div>
-    );
+    )
   }
 
   return (
@@ -133,9 +132,10 @@ const App = () => {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/transaction" element={<AdminTransactionList />} />
         <Route path="/admin/category" element={<AdminCategory />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App

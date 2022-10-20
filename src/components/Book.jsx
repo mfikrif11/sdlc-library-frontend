@@ -44,7 +44,7 @@ const Book = ({
     title: "",
     author: "",
     publish_date: 0,
-    genre: "",
+    category_name: "",
     image_url: "",
     description: "",
     id: "",
@@ -63,43 +63,11 @@ const Book = ({
 
   const dispatch = useDispatch()
 
-  const fetchPost = async () => {
-    try {
-      const book = await axiosInstance.get("/books", {
-        params: {
-          id: params.id,
-        },
-      })
-      console.log(book)
-
-      const bookId = book.data.data.filter((val) => {
-        return val.id == params.id
-      })
-
-      console.log(bookId)
-
-      const response = await axiosInstance.get(`/books/${bookId[0].id}`)
-      console.log(response.data.data)
-
-      // dispatch(
-      //     details({
-      //         id: response.data.data.id,
-      //         title: response.data.title,
-      //         author: response.data.author,
-      //         publish_date: response.data.publish_date,
-      //         genre: response.data.genre,
-      //         image_url: response.data.image_url,
-      //         description: response.data.description,
-      //     })
-      // )
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
   const fetchBookById = async () => {
     try {
       const response = await axiosInstance.get(`/books/${bookId}`)
+
+      console.log(response.data.data)
 
       setBookData(response.data.data)
     } catch (err) {
@@ -249,7 +217,7 @@ const Book = ({
                       <Text fontSize={"xl"} as="b">
                         Genre
                       </Text>
-                      <Text>{bookData?.genre}</Text>
+                      <Text>{bookData?.Category?.category_name}</Text>
                     </Box>
                     <Box>
                       <Text fontSize={"xl"} as="b">

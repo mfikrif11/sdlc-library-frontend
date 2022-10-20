@@ -13,7 +13,7 @@ import {
   Input,
   Select,
   Text,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 
 import { useEffect, useRef, useState } from "react"
 import { axiosInstance } from "../api"
@@ -23,12 +23,12 @@ import libraryImage from "../assets/Reading glasses-bro.png"
 import { useFormik } from "formik"
 
 const Home = () => {
-  const bookRef = useRef(null);
+  const bookRef = useRef(null)
 
-  const [books, setBooks] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(1);
+  const [books, setBooks] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [page, setPage] = useState(1)
+  const [maxPage, setMaxPage] = useState(1)
   const [sortBy, setSortBy] = useState("title")
   const [sortDir, setSortDir] = useState("ASC")
   const [filter, setFilter] = useState("All")
@@ -45,7 +45,7 @@ const Home = () => {
   })
 
   const fetchBooks = async () => {
-    const maxItemsPerPage = 12;
+    const maxItemsPerPage = 12
 
     try {
       const response = await axiosInstance.get(`/books`, {
@@ -58,21 +58,21 @@ const Home = () => {
           title: currentSearch,
           author: currentSearch,
         },
-      });
-      console.log(response);
+      })
+      console.log(response)
 
-      setTotalCount(response.data.dataCount);
-      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage));
+      setTotalCount(response.data.dataCount)
+      setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))
 
       if (page === 1) {
-        setBooks(response.data.data);
+        setBooks(response.data.data)
       } else {
-        setBooks(response.data.data);
+        setBooks(response.data.data)
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const renderBooks = () => {
     return books.map((val) => {
@@ -86,29 +86,29 @@ const Home = () => {
           publish_date={val.publish_date}
           id={val.id}
         />
-      );
-    });
-  };
+      )
+    })
+  }
 
   const sortBookHandler = ({ target }) => {
-    const { value } = target;
+    const { value } = target
 
-    setSortBy(value.split(" ")[0]);
-    setSortDir(value.split(" ")[1]);
-  };
+    setSortBy(value.split(" ")[0])
+    setSortDir(value.split(" ")[1])
+  }
 
   const filterBookHandler = ({ target }) => {
-    const { value } = target;
+    const { value } = target
     setFilter(value)
   }
 
   const seeMoreBtnHandler = () => {
-    setPage(page + 1);
-  };
+    setPage(page + 1)
+  }
 
   const previouspage = () => {
-    setPage(page - 1);
-  };
+    setPage(page - 1)
+  }
 
   useEffect(() => {
     fetchBooks()
@@ -191,7 +191,7 @@ const Home = () => {
                     window.scrollTo({
                       top: bookRef.current.offsetTop + 23,
                       behavior: "smooth",
-                    });
+                    })
                   }}
                 >
                   See Books
@@ -420,31 +420,29 @@ const Home = () => {
 
           <GridItem></GridItem>
         </Grid>
-        {/* Contact Us */}
-        <Box
-          backgroundColor={"#43615f"}
-          textAlign={"center"}
-          padding={"30px"}
-          width={"full"}
-          mt={"30px"}
-          height={"100%"}
-        >
-          <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
-            <Text fontWeight={"light"}>Contact Us</Text>
-            <a
-              href={
-                "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
-              }
-            >
-              chumbucket.library@gmail.com
-            </a>
-          </Text>
+      </Box>
+      {/* Contact Us */}
+      <Box
+        backgroundColor={"#43615f"}
+        textAlign={"center"}
+        padding={"30px"}
+        // mt={"30px"}
+      >
+        <Text fontSize={"20px"} color="white" fontWeight={"bold"}>
+          <Text fontWeight={"light"}>Contact Us</Text>
+          <a
+            href={
+              "https://mail.google.com/mail/u/0/#inbox?compose=XBcJlJmnndWrdwHmRxmMRDJSBQFvQnCCpfhwBZdNFnTldsBKfkDvHRSSPsPzJmSBTmgxBGDbMcZCKKjQ"
+            }
+          >
+            chumbucket.library@gmail.com
+          </a>
+        </Text>
 
-          <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
-        </Box>
+        <Text color={"white"}>Jl. Raya Bikini Bottom, Depan Krusty Krab</Text>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

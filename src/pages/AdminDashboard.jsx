@@ -31,7 +31,6 @@ import { useFormik } from "formik"
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
 import * as Yup from "yup"
-import EditBookModal from "../components/EditBookModal"
 
 const AdminDashboard = () => {
   const [books, setBooks] = useState([])
