@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Flex,
+  FormControl,
   Grid,
   GridItem,
   HStack,
@@ -14,11 +15,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import { useEffect, useRef, useState } from "react";
-import { axiosInstance } from "../api";
-import Book from "../components/Book";
-import plankton from "../assets/plankton.png";
-import libraryImage from "../assets/Reading glasses-bro.png";
+import { useEffect, useRef, useState } from "react"
+import { axiosInstance } from "../api"
+import Book from "../components/Book"
+import plankton from "../assets/plankton.png"
+import libraryImage from "../assets/Reading glasses-bro.png"
+import { useFormik } from "formik"
 
 const Home = () => {
   const bookRef = useRef(null);
@@ -27,22 +29,34 @@ const Home = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
+  const [sortBy, setSortBy] = useState("title")
+  const [sortDir, setSortDir] = useState("ASC")
+  const [filter, setFilter] = useState("All")
+  const [currentSearch, setCurrentSearch] = useState("")
 
-  const [sortBy, setSortBy] = useState("");
-  const [sortDir, setSortDir] = useState("");
-  const [filter, setFilter] = useState("");
+  const formik = useFormik({
+    initialValues: {
+      search: "",
+    },
+    onSubmit: ({ search }) => {
+      setCurrentSearch(search)
+      setPage(1)
+    },
+  })
 
   const fetchBooks = async () => {
     const maxItemsPerPage = 12;
 
     try {
-      const response = await axiosInstance.get(`/books?`, {
+      const response = await axiosInstance.get(`/books`, {
         params: {
           _page: page,
           _limit: maxItemsPerPage,
           _sortBy: sortBy,
           _sortDir: sortDir,
-          genre: filter,
+          CategoryId: filter,
+          title: currentSearch,
+          author: currentSearch,
         },
       });
       console.log(response);
@@ -68,7 +82,7 @@ const Home = () => {
           title={val.title}
           image_url={val.image_url}
           author={val.author}
-          genre={val.genre}
+          category_name={val.Category.category_name}
           publish_date={val.publish_date}
           id={val.id}
         />
@@ -85,9 +99,8 @@ const Home = () => {
 
   const filterBookHandler = ({ target }) => {
     const { value } = target;
-
-    setFilter(value);
-  };
+    setFilter(value)
+  }
 
   const seeMoreBtnHandler = () => {
     setPage(page + 1);
@@ -98,8 +111,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchBooks();
-  }, [page, sortBy, sortDir, filter]);
+    fetchBooks()
+  }, [page, sortBy, sortDir, filter, currentSearch])
+
+  const formChangeHandler = ({ target }) => {
+    const { name, value } = target
+    formik.setFieldValue(name, value)
+  }
 
   return (
     <>
@@ -212,19 +230,20 @@ const Home = () => {
 
               <Box mr={"2"}>
                 <Select onChange={filterBookHandler}>
-                  <option value={"action"}>Action</option>
-                  <option value={"adventure"}>Adventure</option>
-                  <option value={"biography"}>Biography</option>
-                  <option value={"comedy"}>Comedy</option>
-                  <option value={"coming of age"}>Coming Of Age</option>
-                  <option value={"education"}>Education</option>
-                  <option value={"fantasy"}>Fantasy</option>
-                  <option value={"fiction"}>Fiction</option>
-                  <option value={"historical"}>Historical</option>
-                  <option value={"religion"}>Religion</option>
-                  <option value={"romance"}>Romance</option>
-                  <option value={"sci-fi"}>Sci-fi</option>
-                  <option value={"self-help book"}>Self-help book</option>
+                  <option value={"All"}>All</option>
+                  <option value={1}>Action</option>
+                  <option value={2}>Adventure</option>
+                  <option value={3}>Biography</option>
+                  <option value={4}>Coming Of Age</option>
+                  <option value={5}>Comedy</option>
+                  <option value={6}>Education</option>
+                  <option value={7}>Fantasy</option>
+                  <option value={8}>Fiction</option>
+                  <option value={9}>Historical</option>
+                  <option value={10}>Religion</option>
+                  <option value={11}>Romance</option>
+                  <option value={12}>Sci-fi</option>
+                  <option value={13}>Self-help book</option>
                 </Select>
               </Box>
 
@@ -270,15 +289,26 @@ const Home = () => {
           <GridItem display={"flex"}>
             <Box display={"flex"} marginX="auto">
               <Box display={"flex"} my={"auto"} mr="2">
-                <Input placeholder="Search" width={"auto"} />
-                <Button
-                  ml={"1"}
-                  bgColor="#43615f"
-                  color={"white"}
-                  onClick={filterBookHandler}
-                >
-                  Search
-                </Button>
+                <form onSubmit={formik.handleSubmit}>
+                  <FormControl isInvalid={formik.errors.search}>
+                    <Input
+                      placeholder="Search"
+                      name="search"
+                      width={"auto"}
+                      value={formik.values.search}
+                      onChange={formChangeHandler}
+                    />
+                    <Button
+                      bgColor="#43615f"
+                      color={"white"}
+                      type="submit"
+                      ml="1"
+                      mb="1"
+                    >
+                      Search
+                    </Button>
+                  </FormControl>
+                </form>
               </Box>
             </Box>
           </GridItem>
@@ -294,19 +324,20 @@ const Home = () => {
 
               <Box mr={"6"}>
                 <Select onChange={filterBookHandler}>
-                  <option value={"action"}>Action</option>
-                  <option value={"adventure"}>Adventure</option>
-                  <option value={"biography"}>Biography</option>
-                  <option value={"comedy"}>Comedy</option>
-                  <option value={"coming of age"}>Coming Of Age</option>
-                  <option value={"education"}>Education</option>
-                  <option value={"fantasy"}>Fantasy</option>
-                  <option value={"fiction"}>Fiction</option>
-                  <option value={"historical"}>Historical</option>
-                  <option value={"religion"}>Religion</option>
-                  <option value={"romance"}>Romance</option>
-                  <option value={"sci-fi"}>Sci-fi</option>
-                  <option value={"self-help book"}>Self-help book</option>
+                  <option>All</option>
+                  <option value={1}>Action</option>
+                  <option value={2}>Adventure</option>
+                  <option value={3}>Biography</option>
+                  <option value={4}>Coming Of Age</option>
+                  <option value={5}>Comedy</option>
+                  <option value={6}>Education</option>
+                  <option value={7}>Fantasy</option>
+                  <option value={8}>Fiction</option>
+                  <option value={9}>Historical</option>
+                  <option value={10}>Religion</option>
+                  <option value={11}>Romance</option>
+                  <option value={12}>Sci-fi</option>
+                  <option value={13}>Self-help book</option>
                 </Select>
               </Box>
 
@@ -320,7 +351,7 @@ const Home = () => {
                   Sort
                 </Text>
 
-                <Select onChange={sortBookHandler}>
+                <Select placeholder="Sort" onChange={sortBookHandler}>
                   <option value="title ASC">A - Z</option>
                   <option value="title DESC">Z - A</option>
                   <option value="publish_date DESC">Latest</option>

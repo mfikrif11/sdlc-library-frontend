@@ -18,6 +18,10 @@ import NavbarAdmin from "./components/NavbarAdmin";
 import AdminTransaction from "./pages/AdminTransaction";
 import AdminDashboard from "./pages/AdminDashboard";
 
+import AdminTransactionList from "./pages/AdminTransactionList"
+import AdminCategory from "./pages/AdminCategory"
+
+
 const App = () => {
   const [authCheck, setAuthCheck] = useState(false);
   const dispatch = useDispatch();
@@ -126,9 +130,9 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/transaction" element={<AdminTransaction />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/transaction" element={<AdminTransactionList />} />
+        <Route path="/admin/category" element={<AdminCategory />} />
       </Routes>
     </>
   );

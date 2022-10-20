@@ -17,21 +17,28 @@ import {
   ItemList,
   Flex,
   Spacer,
-} from "@chakra-ui/react";
-import { Link, Navigate, useParams } from "react-router-dom";
-import { useState } from "react";
-import { axiosInstance } from "../api";
-import { useSelector, useDispatch } from "react-redux";
-import { details } from "../redux/features/bookSlice";
-import { useEffect } from "react";
-import { login } from "../redux/features/authSlice";
-import { addItemToCart } from "../redux/features/cartSlice";
+} from "@chakra-ui/react"
+import { Link, Navigate, useParams } from "react-router-dom"
+import { useState } from "react"
+import { axiosInstance } from "../api"
+import { useSelector, useDispatch } from "react-redux"
+import { details } from "../redux/features/bookSlice"
+import { useEffect } from "react"
+import { login } from "../redux/features/authSlice"
+import { addItemToCart } from "../redux/features/cartSlice"
 
-const Book = ({ image_url, title, author, publish_date, genre, id }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const params = useParams();
-  const toast = useToast();
-  const [bookId, setBookId] = useState(0);
+const Book = ({
+  image_url,
+  title,
+  author,
+  publish_date,
+  category_name,
+  id,
+}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const params = useParams()
+  const toast = useToast()
+  const [bookId, setBookId] = useState(0)
 
   const [bookData, setBookData] = useState({
     title: "",
@@ -41,20 +48,20 @@ const Book = ({ image_url, title, author, publish_date, genre, id }) => {
     image_url: "",
     description: "",
     id: "",
-  });
-  const authSelector = useSelector((state) => state.auth);
-  const authSelector2 = useSelector((state) => state.book);
+  })
+  const authSelector = useSelector((state) => state.auth)
+  const authSelector2 = useSelector((state) => state.book)
 
   const OverlayOne = () => (
     <ModalOverlay
       bg="blackAlpha.300"
       backdropFilter="blur(10px) hue-rotate(90deg)"
     />
-  );
+  )
 
-  const [overlay, setOverlay] = useState(<OverlayOne />);
+  const [overlay, setOverlay] = useState(<OverlayOne />)
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const fetchPost = async () => {
     try {
@@ -62,17 +69,17 @@ const Book = ({ image_url, title, author, publish_date, genre, id }) => {
         params: {
           id: params.id,
         },
-      });
-      console.log(book);
+      })
+      console.log(book)
 
       const bookId = book.data.data.filter((val) => {
-        return val.id == params.id;
-      });
+        return val.id == params.id
+      })
 
-      console.log(bookId);
+      console.log(bookId)
 
-      const response = await axiosInstance.get(`/books/${bookId[0].id}`);
-      console.log(response.data.data);
+      const response = await axiosInstance.get(`/books/${bookId[0].id}`)
+      console.log(response.data.data)
 
       // dispatch(
       //     details({
@@ -86,60 +93,60 @@ const Book = ({ image_url, title, author, publish_date, genre, id }) => {
       //     })
       // )
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const fetchBookById = async () => {
     try {
-      const response = await axiosInstance.get(`/books/${bookId}`);
+      const response = await axiosInstance.get(`/books/${bookId}`)
 
-      setBookData(response.data.data);
+      setBookData(response.data.data)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const bookBtnHandler = async () => {
     try {
       let newId = {
         BookId: bookId,
-      };
+      }
       // const BookId = bookId
-      const response = await axiosInstance.post(`/carts`, newId);
-      fetchBookById();
+      const response = await axiosInstance.post(`/carts`, newId)
+      fetchBookById()
       // dispatch(bookData.id)
-      dispatch(addItemToCart(response.data.data));
+      dispatch(addItemToCart(response.data.data))
 
-      console.log(response.data);
+      console.log(response.data)
 
       toast({
         title: "Add success",
         status: "success",
-      });
+      })
     } catch (err) {
-      console.log(err);
+      console.log(err)
       toast({
         title: "Add failed",
         status: "error",
         description: err.response.data.message,
-      });
+      })
     }
-  };
+  }
 
   //   useEffect(() => {
   //     bookBtnHandler();
   //   }, []);
 
   useEffect(() => {
-    fetchBookById();
-  }, [bookId]);
+    fetchBookById()
+  }, [bookId])
 
   return (
     <Box
       onClick={() => {
-        setBookId(id);
-        onOpen();
+        setBookId(id)
+        onOpen()
       }}
     >
       <Box
@@ -164,7 +171,7 @@ const Book = ({ image_url, title, author, publish_date, genre, id }) => {
           </Text>
         </Box>
         <Text paddingLeft={"2"} fontWeight="bold" fontSize="15px">
-          {genre}
+          {category_name}
         </Text>
         <Text paddingLeft={"2"} fontSize="13px">
           {author}
@@ -269,7 +276,7 @@ const Book = ({ image_url, title, author, publish_date, genre, id }) => {
         </>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default Book;
+export default Book

@@ -1,14 +1,14 @@
 import { Alert, AlertIcon, AlertTitle, Box, Flex, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
-import Transaction from "../components/Transaction"
+import AdminTransaction from "../components/AdminTransaction"
 
-const TransactionList = () => {
+const AdminTransactionList = () => {
   const [transaction, setTransaction] = useState([])
 
   const fetchTransaction = async () => {
     try {
-      const response = await axiosInstance.get("/transactions/me", {
+      const response = await axiosInstance.get("/admin/user-transactions", {
         params: { _sortDir: "DESC" },
       })
       setTransaction(response.data.data)
@@ -22,7 +22,7 @@ const TransactionList = () => {
     return transaction.map((val) => {
       console.log(val.is_penalty)
       return (
-        <Transaction
+        <AdminTransaction
           key={val.id.toString()}
           borrow_date={val.borrow_date}
           due_date={val.due_date}
@@ -33,6 +33,7 @@ const TransactionList = () => {
           TransactionItems={val.TransactionItems}
           id={val.id}
           fetchTransaction={fetchTransaction}
+          username={val.User.username}
         />
       )
     })
@@ -77,4 +78,4 @@ const TransactionList = () => {
   )
 }
 
-export default TransactionList
+export default AdminTransactionList
