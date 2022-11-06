@@ -6,6 +6,7 @@ const AdminTransactionItem = ({
   genre,
   publish_date,
   image_url,
+  category_name,
 }) => {
   return (
     <Box
@@ -37,7 +38,7 @@ const AdminTransactionItem = ({
           </Text>
 
           <Text fontWeight={"normal"} fontSize={"15px"}>
-            {genre || "Entah"}
+            {category_name || "Entah"}
           </Text>
 
           <Text fontWeight={"normal"} fontSize={"15px"}>

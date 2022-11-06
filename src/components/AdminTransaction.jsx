@@ -45,7 +45,7 @@ const AdminTransaction = ({
           key={val.id.toString()}
           title={val.Book.title}
           author={val.Book.author}
-          genre={val.Book.genre}
+          category_name={val.Book.Category.category_name}
           publish_date={val.Book.publish_date}
           image_url={val.Book.image_url}
         />
@@ -122,8 +122,6 @@ const AdminTransaction = ({
                   <Text>Rp. {total_penalty.toLocaleString()}</Text>
                 </>
               ) : null}
-
-              {/* <Text>{total_penalty}</Text> */}
             </Box>
           </Box>
         </Grid>
