@@ -1,15 +1,28 @@
-import { Alert, AlertIcon, AlertTitle, Box, Flex, Text } from "@chakra-ui/react"
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  Select,
+  Text,
+} from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { axiosInstance } from "../api"
 import AdminTransaction from "../components/AdminTransaction"
 
 const AdminTransactionList = () => {
+  const [sortBy, setSortBy] = useState("borrow_date")
+  const [sortDir, setSortDir] = useState("DESC")
+  const [filter, setFilter] = useState("All")
   const [transaction, setTransaction] = useState([])
 
   const fetchTransaction = async () => {
     try {
-      const response = await axiosInstance.get("/admin/user-transactions", {
-        params: { _sortDir: "DESC" },
+      const response = await axiosInstance.get("/admin/user-transactions?", {
+        params: { loan_status: filter, _sortBy: sortBy, _sortDir: sortDir },
       })
       setTransaction(response.data.data)
       console.log(response)
@@ -39,16 +52,44 @@ const AdminTransactionList = () => {
     })
   }
 
+  const sortTransactionHandler = ({ target }) => {
+    const { value } = target
+
+    setSortBy(value.split(" ")[0])
+    setSortDir(value.split(" ")[1])
+  }
+
+  const filterTransactionHandler = ({ target }) => {
+    const { value } = target
+
+    setFilter(value)
+  }
+
   useEffect(() => {
     fetchTransaction()
-  }, [])
+  }, [filter, sortBy, sortDir])
   return (
     <Box bg={"lightgray"} p={"40px"} boxSize={"100%"} mt={"60px"}>
       <Flex pl={"40px"} pt={"40px"} pr={"40px"} direction={"column"}>
         <Box fontSize={"4xl"} fontWeight={"bold"} bg={"white"}>
-          <Text pl={"40px"} mt={"40px"}>
-            Transaction
-          </Text>
+          <Grid templateColumns={"repeat(3, 1fr)"} pt="20px">
+            <GridItem display={"flex"} pl="4" gap={"4"}>
+              <Select onChange={filterTransactionHandler}>
+                <option value={"All"}>All</option>
+                <option value={"Loan returned"}>Loan Return</option>
+                <option value={"Waiting for return"}>Waiting For Return</option>
+              </Select>
+
+              <Select onChange={sortTransactionHandler}>
+                <option value="borrow_date DESC">Latest</option>
+                <option value="borrow_date ASC">Old</option>
+              </Select>
+            </GridItem>
+            <GridItem textAlign={"center"}>
+              <Text my={"auto"}>Transaction</Text>
+            </GridItem>
+            <GridItem></GridItem>
+          </Grid>
 
           <Box padding={"4"}>
             {renderTransaction()}

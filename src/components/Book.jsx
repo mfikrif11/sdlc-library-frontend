@@ -67,8 +67,6 @@ const Book = ({
     try {
       const response = await axiosInstance.get(`/books/${bookId}`)
 
-      console.log(response.data.data)
-
       setBookData(response.data.data)
     } catch (err) {
       console.log(err)

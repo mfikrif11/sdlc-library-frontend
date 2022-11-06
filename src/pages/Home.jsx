@@ -59,7 +59,7 @@ const Home = () => {
           author: currentSearch,
         },
       })
-      console.log(response)
+      // console.log(response)
 
       setTotalCount(response.data.dataCount)
       setMaxPage(Math.ceil(response.data.dataCount / maxItemsPerPage))

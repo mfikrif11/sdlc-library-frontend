@@ -15,7 +15,6 @@ import TransactionList from "./pages/TransactionList"
 import loadingImage from "./assets/planktonhaha.png"
 import AdminLogin from "./pages/AdminLogin"
 import NavbarAdmin from "./components/NavbarAdmin"
-import AdminTransaction from "./pages/AdminTransaction"
 import AdminDashboard from "./pages/AdminDashboard"
 
 import AdminTransactionList from "./pages/AdminTransactionList"
@@ -40,6 +39,7 @@ const App = () => {
       }
 
       const response = await axiosInstance.get("/auth/refresh-token")
+      console.log(response)
       dispatch(login(response.data.data))
       localStorage.setItem("auth_token", response.data.token)
       setAuthCheck(true)
